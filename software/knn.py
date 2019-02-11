@@ -1,24 +1,13 @@
-import csv
 import math
 import numpy
-import random
 import operator
+from preprocessData import processDataset
 
 def euclideanDistance(point1, point2):
     distance = 0
     for i in range(len(point1)-1):
         distance += pow((float(point1[i]) - float(point2[i])), 2)
     return math.sqrt(distance)
-
-def handleDataset(filename, split, trainingSet=[], testSet=[]):
-    with open(filename, 'r') as csvfile:
-        lines = csv.reader(csvfile)
-        dataset = list(lines)
-        for i in range(1, len(dataset)):
-            if random.random() < split:
-                trainingSet.append(dataset[i])
-            else:
-                testSet.append(dataset[i])
     
 def kNN_algo(trainingSet, testPoint):
     prediction = {}
@@ -46,15 +35,16 @@ def kNN_algo(trainingSet, testPoint):
 
 
 k = 5
-filePath = 'C:\\Users\\xiejihui\\Desktop\\3002\\test_data\\heart.csv'
+filePath = 'C:\\Users\\xiejihui\\Desktop\\3002\\test_data\\pulsar_stars.csv'
 splitRatio = 0.75  #proportion of training sets
 trainingSet = []
 testSet = []
 
-handleDataset(filePath, splitRatio, trainingSet, testSet)
+processDataset(filePath, splitRatio, trainingSet, testSet)
 
 correct_prediction = 0
 for i in range(len(testSet)):
+    print(i)
     prediction = kNN_algo(trainingSet, testSet[i])
     if prediction == int(testSet[i][len(testSet[i])-1]):
         correct_prediction += 1
