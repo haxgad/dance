@@ -9,7 +9,7 @@ def euclideanDistance(point1, point2):
         distance += pow(point1[i] - point2[i], 2)
     return math.sqrt(distance)
     
-def kNN_algo(trainingSet, testPoint):
+def kNN_algo(trainingSet, testPoint, k):
     prediction = {}
     distance = {}
     # compute euclidean distance between the ith data point and each training point
@@ -32,24 +32,13 @@ def kNN_algo(trainingSet, testPoint):
     # return the class which appeares the most times in the k nearest neighbors
     return prediction[0][0]
     
-
-
-k = 5
-filePath = 'C:\\Users\\xiejihui\\Desktop\\3002\\test_data\\pulsar_stars.csv'
-splitRatio = 0.75  #proportion of training sets
-trainingSet = []
-testSet = []
-
-processDataset(filePath, splitRatio, trainingSet, testSet)
-
-correct_prediction = 0
-for i in range(len(testSet)):
-    print(i)
-    prediction = kNN_algo(trainingSet, testSet[i])
-    if prediction == int(testSet[i][len(testSet[i])-1]):
-        correct_prediction += 1
-
-print(correct_prediction/len(testSet))          
+def run_knn(trainingSet, testSet, k):
+    correct_prediction = 0
+    for i in range(len(testSet)):
+        prediction = kNN_algo(trainingSet, testSet[i], k)
+        if prediction == testSet[i][len(testSet[i])-1]:
+            correct_prediction += 1
+    return correct_prediction/len(testSet)         
 
 
     

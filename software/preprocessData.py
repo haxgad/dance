@@ -16,6 +16,6 @@ def processDataset(filename, split, trainingSet=[], testSet=[]):
 def splitFeatureAndClass(set, featureSet, classSet):
     for i in range(len(set)):
         featureSet.append(set[i][0:len(set[i])-1])
-        classSet.append(set[i][len(set[i])-1:])
+        classSet.append(set[i][len(set[i])-1])
     featureSet = np.asarray(featureSet)
     classSet = np.asarray(classSet)

@@ -1,11 +1,19 @@
 from sklearn import svm
-from preprocessData import processDataset
+from preprocessData import splitFeatureAndClass
 
-filePath = 'C:\\Users\\xiejihui\\Desktop\\3002\\test_data\\pulsar_stars.csv'
-splitRatio = 0.75  #proportion of training sets
-trainingSet = []
-testSet = []
-processDataset(filePath, splitRatio, trainingSet, testSet)
+def run_svm(trainingSet, testSet):
+    trainingFeatures = []
+    trainingClass = []
+    testFeatures = []
+    testClass = []
+    splitFeatureAndClass(trainingSet, trainingFeatures, trainingClass)
+    splitFeatureAndClass(testSet, testFeatures, testClass)
 
-clf = svm.SVC(gamma=0.001, C=100.)
-print(clf)
+    clf = svm.SVC(gamma=0.01, C=10.)
+    clf.fit(trainingFeatures, trainingClass) 
+    prediction = clf.predict(testFeatures)
+    correctPrediction = 0
+    for i in range(len(prediction)):
+        if prediction[i] == testClass[i]:
+            correctPrediction += 1
+    return correctPrediction/len(testClass)
