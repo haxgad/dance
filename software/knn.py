@@ -6,7 +6,7 @@ from preprocessData import processDataset
 def euclideanDistance(point1, point2):
     distance = 0
     for i in range(len(point1)-1):
-        distance += pow((float(point1[i]) - float(point2[i])), 2)
+        distance += pow(point1[i] - point2[i], 2)
     return math.sqrt(distance)
     
 def kNN_algo(trainingSet, testPoint):
