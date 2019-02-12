@@ -1,3 +1,5 @@
+# support vector machine
+
 from sklearn import svm
 from preprocessData import splitFeatureAndClass
 
