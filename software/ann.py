@@ -1,12 +1,13 @@
 # aritificial nerual network
 
+import os
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from preprocess_data import split_feature_class_as_array
 
 
-def run_ann(training_set, test_set):
+def run_ann(training_set, test_set, model_name):
     training_feature = []
     training_class = []
     test_feature = []
@@ -14,20 +15,23 @@ def run_ann(training_set, test_set):
     split_feature_class_as_array(training_set, training_feature, training_class)
     split_feature_class_as_array(test_set, test_feature, test_class)
 
-    n_in = len(training_feature[0])
-    n_h = 5
-    n_out = 1
+    if os.path.isfile(model_name):
+        model = torch.load(model_name)
+    else:
+        n_in = len(training_feature[0])
+        n_h = 5
+        n_out = 1
+        model = nn.Sequential(nn.Linear(n_in, n_h),
+                            nn.ReLU(),
+                            nn.Linear(n_h, n_out),
+                            nn.Sigmoid())
 
-    model = nn.Sequential(nn.Linear(n_in, n_h),
-                        nn.ReLU(),
-                        nn.Linear(n_h, n_out),
-                        nn.Sigmoid())
     criterion = torch.nn.MSELoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
 
     x = torch.FloatTensor(training_feature)
     y = torch.FloatTensor(training_class)
-    for epoch in range(2000):
+    for epoch in range(1000):
         # Forward Propagation
         y_pred = model(x)
         # Compute and print loss
@@ -62,6 +66,8 @@ def run_ann(training_set, test_set):
              pred_list.append(0)
         else:
             pred_list.append(1)
+
+    torch.save(model, model_name)
 
     for i in range(len(pred_list)):
         if pred_list[i] == test_class[i][0]:

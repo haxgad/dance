@@ -3,6 +3,8 @@
 import math
 import numpy
 import operator
+from sklearn.neighbors import KNeighborsClassifier
+from preprocess_data import split_feature_class_as_float_array
 
 def euclidean_distance(point1, point2):
     distance = 0
@@ -34,10 +36,22 @@ def kNN_algo(training_set, test_point, k):
     return prediction[0][0]
     
 def run_knn(training_set, test_set, k):
+    training_feature = []
+    training_class = []
+    test_feature = []
+    test_class = []
+    split_feature_class_as_float_array(training_set, training_feature, training_class)
+    split_feature_class_as_float_array(test_set, test_feature, test_class)
+
+    neigh = KNeighborsClassifier(n_neighbors=3)
+    neigh.fit(training_feature, training_class) 
+    prediction = neigh.predict(test_feature)
+
     correct = 0
     for i in range(len(test_set)):
-        prediction = kNN_algo(training_set, test_set[i], k)
-        if prediction == test_set[i][len(test_set[i])-1]:
+        # prediction = kNN_algo(training_set, test_set[i], k)
+        # if prediction == test_set[i][len(test_set[i])-1]:
+        if prediction[i] == test_class[i]:
             correct += 1
     return correct/len(test_set)         
 
