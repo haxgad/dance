@@ -39,13 +39,19 @@ def run_svm(X_train, X_test, y_train, y_test):
     return correct/len(y_test)
 
 
-file_path = "test_data/heart.csv"
-dataframe = pandas.read_csv(file_path, header=None)
-dataset = dataframe.values
-X = dataset[:,0:len(dataset[0])-1].astype(float)
-y = dataset[:,len(dataset[0])-1]
+def get_data_set(file_path):
+	dataframe = pandas.read_csv(file_path, header=None)
+	dataset = dataframe.values
+	X = dataset[:,0:len(dataset[0])-1].astype(float)
+	y = dataset[:,len(dataset[0])-1]
+        return X, y
+
+file_path = "test_data/bezdekIris.csv"
+X, y = get_data_set(file_path)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
+y_train = np.asarray(y_train).ravel().astype(int)
+y_test = np.asarray(y_test).ravel().astype(int)
 
 # accuracy = run_knn(X_train, X_test, y_train, y_test, k=5)
 # accuracy = run_svm(X_train, X_test, y_train, y_test)
