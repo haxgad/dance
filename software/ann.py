@@ -1,16 +1,27 @@
 import numpy as np
-from keras.models import Sequential
+from keras.models import Sequential, model_from_json
 from keras.layers import Dense
-from keras.wrappers.scikit_learn import KerasClassifier
-from sklearn.metrics import confusion_matrix
-from sklearn.model_selection import train_test_split
+from keras.utils import np_utils
+import os.path
 
 
-def run_ann(X_train, X_test, y_train, y_test, model_name): 
-	num_feature = len(X_train[0])
-	num_class = np.amax(y_train).astype(int)+1
+def save_model(model, model_name):
+    # saving model
+    json_model = model.to_json()
+    open(model_name + '.json', 'w').write(json_model)
+    # saving weights
+    model.save_weights(model_name + '_weights.h5', overwrite=True)
 
-	def nn_model():
+
+def load_model(model_name):
+    # loading model
+    model = model_from_json(open(model_name + '.json').read())
+    model.load_weights(model_name + '_weights.h5')
+    model.compile(loss='categorical_crossentropy', optimizer='adam')
+    return model
+
+
+def build_nn_model(num_feature, num_class):
 		# create model
 		model = Sequential()
 		model.add(Dense(8, input_dim=num_feature, activation='relu'))
@@ -19,13 +30,18 @@ def run_ann(X_train, X_test, y_train, y_test, model_name):
 		model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 		return model
 
-	estimator = KerasClassifier(build_fn=nn_model, epochs=200, batch_size=5, verbose=0)
-	estimator.fit(X_train, y_train)
-	y_pred = estimator.predict(X_test)
-	matrix = confusion_matrix(y_test, y_pred)
 
-	correct = 0
-	for i in range(len(matrix)):
-		correct += matrix[i][i]
-	print(matrix)
-	return correct/len(y_pred)
+def run_ann(X_train, X_test, y_train, y_test, model_name): 
+	y_train = np_utils.to_categorical(y_train)
+	
+	if(os.path.isfile(model_name + '.json')):
+		model = load_model(model_name)
+	else:
+		num_feature = len(X_train[0])
+		num_class = max(np.amax(y_train).astype(int), np.amax(y_test).astype(int))+1
+		print(num_class)
+		model = build_nn_model(num_feature, num_class)
+
+	model.fit(X_train, y_train, nb_epoch=200, batch_size=5, verbose=0)
+	save_model(model, model_name)
+	return model.predict_classes(X_test, verbose=0)

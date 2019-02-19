@@ -3,6 +3,7 @@ from sklearn import svm
 from sklearn.linear_model import Perceptron
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix
 import numpy as np
 import pandas
 import csv
@@ -11,44 +12,36 @@ import csv
 def run_perceptron(X_train, X_test, y_train, y_test):
     clf = Perceptron(tol=1e-3, random_state=0)
     clf.fit(X_train, y_train)
-    return clf.score(X_test, y_test)
+    return clf.predict(X_test)
 
 
 def run_knn(X_train, X_test, y_train, y_test, k):
-    neigh = KNeighborsClassifier(n_neighbors=3)
+    neigh = KNeighborsClassifier(n_neighbors=k)
     neigh.fit(X_train, y_train) 
-    prediction = neigh.predict(X_test)
-
-    correct = 0
-    for i in range(len(y_test)):
-        # prediction = kNN_algo(training_set, test_set[i], k)
-        # if prediction == test_set[i][len(test_set[i])-1]:
-        if prediction[i] == y_test[i]:
-            correct += 1
-    return correct/len(y_test)       
+    return neigh.predict(X_test)
 
 
 def run_svm(X_train, X_test, y_train, y_test):
     clf = svm.SVC(gamma=0.01, C=10.)
     clf.fit(X_train, y_train) 
-    prediction = clf.predict(X_test)
-    correct = 0
-    for i in range(len(prediction)):
-        if prediction[i] == y_test[i]:
-            correct += 1
-    return correct/len(y_test)
+    return clf.predict(X_test)
 
-
-file_path = "test_data/heart.csv"
+file_name = 'bezdekIris'
+file_path = 'test_data/' + file_name + '.csv'
 dataframe = pandas.read_csv(file_path, header=None)
 dataset = dataframe.values
 X = dataset[:,0:len(dataset[0])-1].astype(float)
 y = dataset[:,len(dataset[0])-1]
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
+# prediction = run_knn(X_train, X_test, y_train, y_test, k=5)
+# prediction = run_svm(X_train, X_test, y_train, y_test)
+prediction = run_ann(X_train, X_test, y_train, y_test, file_name+'_model')
+# prediction = run_perceptron(X_train, X_test, y_train, y_test)
 
-# accuracy = run_knn(X_train, X_test, y_train, y_test, k=5)
-# accuracy = run_svm(X_train, X_test, y_train, y_test)
-accuracy = run_ann(X_train, X_test, y_train, y_test, "pulsar_stars_model")
-# accuracy = run_perceptron(X_train, X_test, y_train, y_test)
-print(accuracy)
+matrix = confusion_matrix(y_test, prediction)
+print(matrix)
+correct = 0
+for i in range(len(matrix)):
+    correct += matrix[i][i]
+print("Accuracy: ", correct/len(y_test))
