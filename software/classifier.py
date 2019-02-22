@@ -9,28 +9,21 @@ import numpy as np
 import pandas
 import csv
 
-#Harsh
-def run_random_forest(X_train, X_test, y_train, y_test):
-    clf=RandomForestClassifier(n_estimators=20)
-    clf.fit(X_train,y_train)
-    y_pred=clf.predict(X_test)
-    return y_pred
-
 def run_perceptron(X_train, X_test, y_train, y_test):
     clf = Perceptron(tol=1e-3, random_state=0)
-    clf.fit(X_train, y_train) #train
+    clf.fit(X_train, y_train) 
     return clf.predict(X_test)
 
 
 def run_knn(X_train, X_test, y_train, y_test, k):
     neigh = KNeighborsClassifier(n_neighbors=k)
-    neigh.fit(X_train, y_train) #train
+    neigh.fit(X_train, y_train) 
     return neigh.predict(X_test)
 
 
 def run_svm(X_train, X_test, y_train, y_test):
     clf = svm.SVC(gamma=0.01, C=10.)
-    clf.fit(X_train, y_train) #train
+    clf.fit(X_train, y_train) 
     return clf.predict(X_test)
 
 file_name = 'winequality-white'#'pulsar_stars'
