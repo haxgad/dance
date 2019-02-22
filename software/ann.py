@@ -39,9 +39,8 @@ def run_ann(X_train, X_test, y_train, y_test, model_name):
 	else:
 		num_feature = len(X_train[0])
 		num_class = max(np.amax(y_train).astype(int), np.amax(y_test).astype(int))+1
-		print(num_class)
 		model = build_nn_model(num_feature, num_class)
 
-	model.fit(X_train, y_train, nb_epoch=200, batch_size=5, verbose=0)
+	model.fit(X_train, y_train, epochs=200, batch_size=5, verbose=0)
 	save_model(model, model_name)
 	return model.predict_classes(X_test, verbose=0)
