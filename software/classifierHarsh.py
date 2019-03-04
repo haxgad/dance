@@ -26,7 +26,7 @@ import csv
 #Accuracy is about 0.938 for breast-cancer for 50 estimators (binary)
 #Accuracy is about 0.964 for breast-cancer for 100 estimators (binary)
 
-def run_AdaBoost(X_train, X_test, y_train, y_test):
+def ada_boost(X_train, X_test, y_train, y_test):
     clf=AdaBoostClassifier(n_estimators=100, learning_rate=1)
     clf.fit(X_train,y_train)
     y_pred=clf.predict(X_test)
@@ -40,7 +40,7 @@ def run_AdaBoost(X_train, X_test, y_train, y_test):
 #Accuracy is about x for breast-cancer for 100 estimators (binary)
 #Accuracy is about x for breast-cancer for 50 estimators (binary)
 
-def run_random_forest(X_train, X_test, y_train, y_test):
+def random_forest(X_train, X_test, y_train, y_test):
     clf=RandomForestClassifier(n_estimators=100)
     clf.fit(X_train,y_train)
     y_pred=clf.predict(X_test)
@@ -50,30 +50,42 @@ def run_random_forest(X_train, X_test, y_train, y_test):
 
 #Accuracy is about 0.903 for breast-cancer for 
 
-def run_decision_tree(X_train, X_test, y_train, y_test):
+def decision_tree(X_train, X_test, y_train, y_test):
     clf=tree.DecisionTreeClassifier()
     clf.fit(X_train,y_train)
     y_pred=clf.predict(X_test)
     return y_pred
 
-file_name = 'winequality-white'
-file_path = 'test_data/' + file_name + '.csv'
-dataframe = pandas.read_csv(file_path, header=None)
-dataset = dataframe.values
-X = dataset[:,0:len(dataset[0])-1].astype(float)
-y = dataset[:,len(dataset[0])-1]
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+#algo_name is the name of the function you want to run: ada_boost, random_forest, or deicision_tree
+#data_set is the name of the dataset without path and file extension: 'winequality-white', or 'Breast_cancer_data'
 
-#prediction=run_random_forest(X_train, X_test, y_train, y_test)
+def run_algo(algo_name, data_set):
+    print(algo_name, data_set)
+    file_path = 'test_data/' + data_set + '.csv'
+    dataframe = pandas.read_csv(file_path, header=None)
+    dataset = dataframe.values
+    X = dataset[:,0:len(dataset[0])-1].astype(float)
+    y = dataset[:,len(dataset[0])-1]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
-#prediction=run_AdaBoost(X_train, X_test, y_train, y_test)
+    prediction= algo_name(X_train, X_test, y_train, y_test)
 
-prediction=run_decision_tree(X_train, X_test, y_train, y_test)
+    matrix = confusion_matrix(y_test, prediction)
+    print(matrix)
 
-matrix = confusion_matrix(y_test, prediction)
-print(matrix)
+    correct = 0
+    for i in range(len(matrix)):
+        correct += matrix[i][i]
+    print("Accuracy: ", correct/len(y_test))
+    print("END")
+    print("\n")
 
-correct = 0
-for i in range(len(matrix)):
-    correct += matrix[i][i]
-print("Accuracy: ", correct/len(y_test))
+#Mutate the function to run for a different number of estimators if random_forest or ada_boost. Currently optimised.
+run_algo(random_forest, 'winequality-white')
+run_algo(random_forest, 'Breast_cancer_data')
+
+run_algo(ada_boost, 'winequality-white')
+run_algo(ada_boost, 'Breast_cancer_data')
+
+run_algo(decision_tree, 'winequality-white')
+run_algo(decision_tree, 'Breast_cancer_data')
