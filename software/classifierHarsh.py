@@ -6,8 +6,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import AdaBoostClassifier
-from sklearn import tree
 
+from sklearn import tree
 import numpy as np
 import pandas
 import csv
@@ -18,37 +18,37 @@ import csv
 #AdaBoost is an iterative ensemble method. AdaBoost classifier builds a strong classifier by combining multiple poorly performing classifiers so that you will get high accuracy strong classifier. 
 
 
-#Accuracy is about 0.412 for winequality-white for 50 estimators 
-#Accuracy is about 0.431 for winequality-white for 100 estimators 
-#Accuracy is about 0.446 for winequality-white for 10 estimators
+#Accuracy is about 0.412 for winequality-white for 50 estimators (Rating 1-10)
+#Accuracy is about 0.431 for winequality-white for 100 estimators (Rating 1-10)
+#Accuracy is about 0.490 for winequality-white for 10 estimators (Rating 1-10)
 
 #Accuracy is about 0.956 for breast-cancer for 10 estimators (binary)
 #Accuracy is about 0.938 for breast-cancer for 50 estimators (binary)
 #Accuracy is about 0.964 for breast-cancer for 100 estimators (binary)
 
 def ada_boost(X_train, X_test, y_train, y_test):
-    clf=AdaBoostClassifier(n_estimators=100, learning_rate=1)
+    clf=AdaBoostClassifier(n_estimators=10, learning_rate=1)
     clf.fit(X_train,y_train)
     y_pred=clf.predict(X_test)
     return y_pred
 
-#Accuracy is about x for winequality-white for 50 estimators 
-#Accuracy is about x for winequality-white for 100 estimators 
-#Accuracy is about x for winequality-white for 10 estimators
+#Accuracy is about 0.423 for winequality-white for 50 estimators (Rating 1-10)
+#Accuracy is about 0.673 for winequality-white for 100 estimators (Rating 1-10)
+#Accuracy is about 0.361 for winequality-white for 10 estimators (Rating 1-10)
 
-#Accuracy is about x for breast-cancer for 300 estimators (binary)
-#Accuracy is about x for breast-cancer for 100 estimators (binary)
-#Accuracy is about x for breast-cancer for 50 estimators (binary)
+#Accuracy is about 0.947 for breast-cancer for 300 estimators (binary)
+#Accuracy is about 0.971 for breast-cancer for 100 estimators (binary)
+#Accuracy is about 0.921 for breast-cancer for 50 estimators (binary)
 
 def random_forest(X_train, X_test, y_train, y_test):
-    clf=RandomForestClassifier(n_estimators=100)
+    clf=RandomForestClassifier(n_estimators=50)
     clf.fit(X_train,y_train)
     y_pred=clf.predict(X_test)
     return y_pred
 
-#Accuracy is about 0.631 for winequality-white for 50 estimators 
+#Accuracy is about 0.631 for winequality-white  (Rating 1-10)
 
-#Accuracy is about 0.903 for breast-cancer for 
+#Accuracy is about 0.903 for breast-cancer (Binary)
 
 def decision_tree(X_train, X_test, y_train, y_test):
     clf=tree.DecisionTreeClassifier()
@@ -80,7 +80,8 @@ def run_algo(algo_name, data_set):
     print("END")
     print("\n")
 
-#Mutate the function to run for a different number of estimators if random_forest or ada_boost. Currently optimised.
+#Mutate the function to run for a different number of estimators if random_forest or ada_boost. Currently optimised for highest accuracy.
+
 run_algo(random_forest, 'winequality-white')
 run_algo(random_forest, 'Breast_cancer_data')
 
@@ -89,3 +90,54 @@ run_algo(ada_boost, 'Breast_cancer_data')
 
 run_algo(decision_tree, 'winequality-white')
 run_algo(decision_tree, 'Breast_cancer_data')
+
+#The accuracy for wine quality (about 5000 rows) and breast cancer data (about 600 rows) is significant different. 
+#This is expected because breast cancer is a binary data set, while wine quality is a) subjective and b) rated from 1-10
+
+#wine-quality headers 
+
+# fixed.acidity
+# volatile.acidity
+# citric.acid
+# residual.sugar
+# chlorides
+# free.sulfur.dioxide
+# total.sulfur.dioxide
+# density
+# pH
+# sulphates
+# alcohol
+# quality
+
+#breast cancer headers
+
+# radius_meanmean of distances from center to points on the perimeter
+# texture_meanstandard deviation of gray-scale values
+# perimeter_meanmean size of the core tumor
+# area_mean
+# smoothness_meanmean of local variation in radius lengths
+# compactness_meanmean of perimeter^2 / area - 1.0
+# concavity_meanmean of severity of concave portions of the contour
+# concave points_meanmean for number of concave portions of the contour
+# symmetry_mean
+# fractal_dimension_meanmean for "coastline approximation" - 1
+# radius_sestandard error for the mean of distances from center to points on the perimeter
+# texture_sestandard error for standard deviation of gray-scale values
+# perimeter_se
+# area_se
+# smoothness_sestandard error for local variation in radius lengths
+# compactness_sestandard error for perimeter^2 / area - 1.0
+# concavity_sestandard error for severity of concave portions of the contour
+# concave points_sestandard error for number of concave portions of the contour
+# symmetry_se
+# fractal_dimension_sestandard error for "coastline approximation" - 1
+# radius_worst"worst" or largest mean value for mean of distances from center to points on the perimeter
+# texture_worst"worst" or largest mean value for standard deviation of gray-scale values
+# perimeter_worst
+# area_worst
+# smoothness_worst"worst" or largest mean value for local variation in radius lengths
+# compactness_worst"worst" or largest mean value for perimeter^2 / area - 1.0
+# concavity_worst"worst" or largest mean value for severity of concave portions of the contour
+# concave points_worst"worst" or largest mean value for number of concave portions of the contour
+# symmetry_worst
+# fractal_dimension_worst"worst" or largest mean value for "coastline approximation" - 1
