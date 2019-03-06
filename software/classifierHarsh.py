@@ -14,9 +14,9 @@ import csv
 
 #adaptive boosting classifier
 #https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.AdaBoostClassifier.html
-#It combines multiple classifiers to increase the accuracy of classifiers. 
-#AdaBoost is an iterative ensemble method. AdaBoost classifier builds a strong classifier by combining multiple poorly performing classifiers so that you will get high accuracy strong classifier. 
+#weak-learners
 
+#It combines multiple classifiers to increase the accuracy of classifiers. 
 
 #Accuracy is about 0.412 for winequality-white for 50 estimators (Rating 1-10)
 #Accuracy is about 0.431 for winequality-white for 100 estimators (Rating 1-10)
@@ -26,8 +26,8 @@ import csv
 #Accuracy is about 0.938 for breast-cancer for 50 estimators (binary)
 #Accuracy is about 0.964 for breast-cancer for 100 estimators (binary)
 
-def ada_boost(X_train, X_test, y_train, y_test):
-    clf=AdaBoostClassifier(n_estimators=10, learning_rate=1)
+def ada_boost(X_train, X_test, y_train, y_test): 
+    clf=AdaBoostClassifier(n_estimators=10, learning_rate=1) #ideal n_estimators: 10
     clf.fit(X_train,y_train)
     y_pred=clf.predict(X_test)
     return y_pred
