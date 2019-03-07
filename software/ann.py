@@ -18,7 +18,7 @@ def load_model(model_name):
     # loading model
     model = model_from_json(open(model_name + '.json').read())
     model.load_weights(model_name + '_weights.h5')
-    model.compile(loss='sparse_categorical_crossentropy', optimizer='adam')
+    model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
     return model
 
 
@@ -34,7 +34,6 @@ def build_nn_model(num_feature, num_class):
 
 
 def run_ann(X_train, X_test, y_train, y_test, model_name): 
-	# y_train = np_utils.to_categorical(y_train)
 
 	if(os.path.isfile(model_name + '.json')):
 		model = load_model(model_name)
@@ -49,16 +48,17 @@ def run_ann(X_train, X_test, y_train, y_test, model_name):
 	return model.predict_classes(X_test, verbose=0)
 
 def k_fold_validate(X, y, model_name):
+
+	model = load_model(model_name)
+	print(model.metrics_names)
 	seed = 7
 	np.random.seed(seed)
 	cvscores = []
 	kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
-
+	
 	for train, test in kfold.split(X, y):
-		model = load_model(model_name)
-		model.fit(X[train], y[train], epochs=150, batch_size=10, verbose=0)
 		scores = model.evaluate(X[test], y[test], verbose=0)
-		print("%s: %.2f%%" % (model.metrics_names[0], scores))
-		cvscores.append(scores * 100)
+		print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
+		cvscores.append(scores*100)
 
 	print("%.2f%% (+/- %.2f%%)" % (np.mean(cvscores), np.std(cvscores)))
