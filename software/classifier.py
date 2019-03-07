@@ -1,4 +1,4 @@
-from ann import run_ann
+from ann import run_ann, k_fold_validate
 from sklearn import svm
 from sklearn.linear_model import Perceptron
 from sklearn.neighbors import KNeighborsClassifier
@@ -50,7 +50,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 # does not work for heart
 # over 98% for pulsar_stars, training is slow with large dataset, can use saved trained model
 prediction = run_ann(X_train, X_test, y_train, y_test, file_name+'_model')
-
+k_fold_validate(X, y, file_name+'_model')
 # 50% - 80% for bezdekIris
 # does not work for heart
 # about 97% for pulsar_stars

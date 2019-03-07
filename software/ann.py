@@ -35,14 +35,28 @@ def build_nn_model(num_feature, num_class):
 
 def run_ann(X_train, X_test, y_train, y_test, model_name): 
 	y_train = np_utils.to_categorical(y_train)
-	
+	print(y_train)
 	if(os.path.isfile(model_name + '.json')):
 		model = load_model(model_name)
 	else:
 		num_feature = len(X_train[0])
 		num_class = max(np.amax(y_train).astype(int), np.amax(y_test).astype(int))+1
 		model = build_nn_model(num_feature, num_class)
-
+	
 	model.fit(X_train, y_train, epochs=200, batch_size=5, verbose=0)
+
 	save_model(model, model_name)
 	return model.predict_classes(X_test, verbose=0)
+
+def k_fold_validate(X, y, model_name):
+	seed = 7
+	np.random.seed(seed)
+	cvscores = []
+	kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
+	for train, test in kfold.split(X, y):
+		model = load_model(model_name)
+		model.fit(X[train], y[train], epochs=150, batch_size=10, verbose=0)
+		scores = model.evaluate(X[test], y[test], verbose=0)
+		print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
+		cvscores.append(scores[1] * 100)
+	print("%.2f%% (+/- %.2f%%)" % (np.mean(cvscores), np.std(cvscores)))
