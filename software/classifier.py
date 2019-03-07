@@ -25,11 +25,7 @@ def run_svm(X_train, X_test, y_train, y_test):
     clf.fit(X_train, y_train) 
     return clf.predict(X_test)
 
-# file_name = 'winequality-white'
 # file_name = 'bezdekIris'
-# file_name = 'ph-data'
-# file_name = 'Breast_cancer_data'
-# file_name = 'development-index'
 # file_name = 'pulsar_stars'
 # file_name = 'heart'
 file_name = 'hard'

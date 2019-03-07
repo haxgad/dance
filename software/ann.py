@@ -9,15 +9,15 @@ import os.path
 def save_model(model, model_name):
     # saving model
     json_model = model.to_json()
-    open(model_name + '.json', 'w').write(json_model)
+    open('models\\' + model_name + '.json', 'w').write(json_model)
     # saving weights
-    model.save_weights(model_name + '_weights.h5', overwrite=True)
+    model.save_weights('models\\' + model_name + '_weights.h5', overwrite=True)
 
 
 def load_model(model_name):
     # loading model
-    model = model_from_json(open(model_name + '.json').read())
-    model.load_weights(model_name + '_weights.h5')
+    model = model_from_json(open('models\\' + model_name + '.json').read())
+    model.load_weights('models\\' + model_name + '_weights.h5')
     model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
     return model
 
@@ -35,7 +35,7 @@ def build_nn_model(num_feature, num_class):
 
 def run_ann(X_train, X_test, y_train, y_test, model_name): 
 
-	if(os.path.isfile(model_name + '.json')):
+	if(os.path.isfile('models\\' + model_name + '.json')):
 		model = load_model(model_name)
 	else:
 		num_feature = len(X_train[0])
@@ -50,7 +50,6 @@ def run_ann(X_train, X_test, y_train, y_test, model_name):
 def k_fold_validate(X, y, model_name):
 
 	model = load_model(model_name)
-	print(model.metrics_names)
 	seed = 7
 	np.random.seed(seed)
 	cvscores = []
