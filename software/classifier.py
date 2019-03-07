@@ -25,15 +25,15 @@ def run_svm(X_train, X_test, y_train, y_test):
     clf.fit(X_train, y_train) 
     return clf.predict(X_test)
 
-file_name = 'winequality-white'
-# file_name = 'bezdekIris'
+# file_name = 'winequality-white'
+file_name = 'bezdekIris'
 # file_name = 'ph-data'
 # file_name = 'development-index'
 file_path = 'test_data/' + file_name + '.csv'
 dataframe = pandas.read_csv(file_path, header=None)
 dataset = dataframe.values
 X = dataset[:,0:len(dataset[0])-1].astype(float)
-y = dataset[:,len(dataset[0])-1]
+y = dataset[:,len(dataset[0])-1].astype(float)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
 # 93.3% for bezdekIris
