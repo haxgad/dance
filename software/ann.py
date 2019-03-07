@@ -45,9 +45,11 @@ def run_ann(X_train, X_test, y_train, y_test, model_name):
 	model.fit(X_train, y_train, epochs=200, batch_size=10, verbose=0)
 
 	save_model(model, model_name)
-	return model.predict_classes(X_test, verbose=0)
+	prediction = model.predict_classes(X_test, verbose=0)
+	accuracy = model.evaluate(X_test, y_test, verbose=0)[1]
+	return prediction, accuracy
 
-def k_fold_validate(X, y, model_name):
+def k_fold_cross_validate(X, y, model_name):
 
 	model = load_model(model_name)
 	seed = 7
