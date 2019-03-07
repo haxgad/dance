@@ -12,6 +12,30 @@ import numpy as np
 import pandas
 import csv
 
+#wine-quality headers 
+
+# fixed.acidity
+# volatile.acidity
+# citric.acid
+# residual.sugar
+# chlorides
+# free.sulfur.dioxide
+# total.sulfur.dioxide
+# density
+# pH
+# sulphates
+# alcohol
+# quality
+
+#breast cancer headers
+
+# mean_radius
+# mean_texture
+# mean_perimeter
+# mean_area
+# mean_smoothness
+# diagnosis
+
 #adaptive boosting classifier
 #https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.AdaBoostClassifier.html
 #weak-learners
@@ -77,7 +101,8 @@ def run_algo(algo_name, data_set):
     for i in range(len(matrix)):
         correct += matrix[i][i]
     print("Accuracy: ", correct/len(y_test))
-    print("END")
+    print(algo_name, data_set)
+    print("End of case")
     print("\n")
 
 #Mutate the function to run for a different number of estimators if random_forest or ada_boost. Currently optimised for highest accuracy.
@@ -94,26 +119,3 @@ run_algo(decision_tree, 'Breast_cancer_data')
 #The accuracy for wine quality (about 5000 rows) and breast cancer data (about 600 rows) is significant different. 
 #This is expected because breast cancer is a binary data set, while wine quality is a) subjective and b) rated from 1-10
 
-#wine-quality headers 
-
-# fixed.acidity
-# volatile.acidity
-# citric.acid
-# residual.sugar
-# chlorides
-# free.sulfur.dioxide
-# total.sulfur.dioxide
-# density
-# pH
-# sulphates
-# alcohol
-# quality
-
-#breast cancer headers
-
-# mean_radius
-# mean_texture
-# mean_perimeter
-# mean_area
-# mean_smoothness
-# diagnosis
