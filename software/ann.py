@@ -2,6 +2,7 @@ import numpy as np
 from keras.models import Sequential, model_from_json
 from keras.layers import Dense
 from keras.utils import np_utils
+from sklearn.model_selection import StratifiedKFold
 import os.path
 
 
@@ -25,6 +26,7 @@ def build_nn_model(num_feature, num_class):
 		# create model
 		model = Sequential()
 		model.add(Dense(8, input_dim=num_feature, activation='relu'))
+		model.add(Dense(6, input_dim=8, activation='linear'))
 		model.add(Dense(num_class, activation='softmax'))
 		# Compile model
 		model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
