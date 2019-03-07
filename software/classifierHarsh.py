@@ -1,16 +1,15 @@
-from ann import run_ann
-from sklearn import svm
-from sklearn.linear_model import Perceptron
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import AdaBoostClassifier
-
 from sklearn import tree
+
 import numpy as np
 import pandas
 import csv
+
+
 
 #wine-quality headers 
 
@@ -35,6 +34,13 @@ import csv
 # mean_area
 # mean_smoothness
 # diagnosis
+
+# x_train is the training data set.
+# y_train is the set of labels to all the data in x_train.
+# The test set is a subset of the data set that you use to test your model after the model has gone through initial vetting by the validation set.
+
+# x_test is the test data set.
+# y_test is the set of labels to all the data in x_test.
 
 #adaptive boosting classifier
 #https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.AdaBoostClassifier.html
@@ -92,6 +98,8 @@ def run_algo(algo_name, data_set):
     y = dataset[:,len(dataset[0])-1]
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
+    #X_test = [[7,0.27,0.36,20.7,0.045,45,170,1.001,3,0.45,8.8]]
+
     prediction= algo_name(X_train, X_test, y_train, y_test)
 
     matrix = confusion_matrix(y_test, prediction)
@@ -118,4 +126,9 @@ run_algo(decision_tree, 'Breast_cancer_data')
 
 #The accuracy for wine quality (about 5000 rows) and breast cancer data (about 600 rows) is significant different. 
 #This is expected because breast cancer is a binary data set, while wine quality is a) subjective and b) rated from 1-10
+
+#The goal of k-fold cross-validation is to test the model's ability to predict new data 
+# that was not used in estimating it, in order to flag problems like overfitting or selection 
+# bias and to give an insight on how the model will generalize to an independent dataset 
+# (i.e., an unknown dataset, for instance from a real problem).
 
