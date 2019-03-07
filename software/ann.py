@@ -56,6 +56,7 @@ def k_fold_validate(X, y, model_name):
 	kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
 	
 	for train, test in kfold.split(X, y):
+		model.fit(X[train], y[train], epochs=150, batch_size=10, verbose=0)
 		scores = model.evaluate(X[test], y[test], verbose=0)
 		print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
 		cvscores.append(scores*100)
