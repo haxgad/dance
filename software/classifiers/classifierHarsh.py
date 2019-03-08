@@ -98,9 +98,9 @@ def run_algo(clf, data_set):
                       [7, 0.27, 0.36, 20.7, 0.045, 45, 170, 1.001, 3, 0.45, 8.8]]
         new_y_test = [6, 6]
 
-        new_prediction = clf.predict(new_X_test)
-        print('X: {}, Y: {}, Pred_Y: {}'.format(
-            new_X_test, new_y_test, new_prediction))
+        # new_prediction = clf.predict(new_X_test)
+        # print('X: {}, Y: {}, Pred_Y: {}'.format(
+        #     new_X_test, new_y_test, new_prediction))
 
         correct = 0
         for i in range(len(matrix)):
@@ -118,16 +118,24 @@ def run_algo(clf, data_set):
 # Mutate the function to run for a different number of estimators if random_forest or ada_boost. Currently optimised for highest accuracy.
 
 
-run_algo(RandomForestClassifier(n_estimators=50), 'winequality-white')
+#run_algo(RandomForestClassifier(n_estimators=50), 'pulsar_stars')
 # run_algo(RandomForestClassifier(n_estimators=50), 'Breast_cancer_data')
+# run_algo(RandomForestClassifier(n_estimators=50), 'pulsar_stars')
+run_algo(RandomForestClassifier(n_estimators=50), 'hard')
 
 # run_algo(AdaBoostClassifier(n_estimators=10,
 #                             learning_rate=1), 'winequality-white')
 # run_algo(AdaBoostClassifier(n_estimators=10,
 #                             learning_rate=1), 'Breast_cancer_data')
+# run_algo(AdaBoostClassifier(n_estimators=10,
+#                             learning_rate=1), 'pulsar_stars')
+#run_algo(AdaBoostClassifier(n_estimators=10,
+#                             learning_rate=1), 'hard')
 
 # run_algo(tree.DecisionTreeClassifier(), 'winequality-white')
 # run_algo(tree.DecisionTreeClassifier(), 'Breast_cancer_data')
+#run_algo(tree.DecisionTreeClassifier(), 'pulsar_stars')
+#run_algo(tree.DecisionTreeClassifier(), 'hard')
 
 # The accuracy for wine quality (about 5000 rows) and breast cancer data (about 600 rows) is significant different.
 # This is expected because breast cancer is a binary data set, while wine quality is a) subjective and b) rated from 1-10
