@@ -2,8 +2,6 @@
 // Static Variables
 int baudRate = 9600;
 
-//SoftwareSerial mySerial(10, 11); // RX, TX
-
 #include "I2Cdev.h"
 
 #include "MPU6050_6Axis_MotionApps20.h"
@@ -13,8 +11,6 @@ int baudRate = 9600;
 #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
     #include "Wire.h"
 #endif
-
-#include "TimerOne.h"
 
 MPU6050 mpu;
 
@@ -73,15 +69,6 @@ void SetOffsets(int TheOffsets[6])
 // ================================================================
 
 volatile bool mpuInterrupt = false;     // indicates whether MPU interrupt pin has gone high
-/*
-void dmpDataReady() {    
-    mpuInterrupt = true;
-}*/
-
-
-
-
-char foo;
 
 #include "Arduino.h"
 #include <SoftwareSerial.h>
@@ -153,21 +140,6 @@ void TaskAnalogRead( void *pvParameters __attribute__((unused)) )  // This is a 
     vTaskDelay(100);  // one tick delay (15ms) in between reads for stability
   }
 }
-// void HandShake( void *pvParameters __attribute__((unused)) ) //http://www.robopapa.com/Projects/RaspberryPiArduinoCommunication
-// {
-//   for (;;)
-//   {
-//     if ( xSemaphoreTake( xSerialSemaphore, ( TickType_t ) 5 ) == pdTRUE )
-//     {
-    
-//     xSemaphoreGive( xSerialSemaphore );
-//     }
-//   vTaskDelay(100);
-//   }  
-// }
-
-int number = 1;
-int i;
 
 // Definition of packet structure
 typedef struct DataPacket{
@@ -484,7 +456,11 @@ void setup() {
         Fastwire::setup(400, true);
     #endif
 
-    Serial.begin(9600);
+    // initialize serial communication at 9600 bits per second FOR COM(USB):
+    Serial.begin(baudRate); 
+    // initialize serial coms for UART:
+    Serial2.begin(baudRate);
+    
     while (!Serial); // wait for Leonardo enumeration, others continue immediately
 
     // initialize device
@@ -539,13 +515,6 @@ void setup() {
     pinMode(SENSOR3_AD0, OUTPUT);
     pinMode(SENSOR4_AD0, OUTPUT);
 
-    Serial2.begin(9600);
-
-    
-  // initialize serial communication at 9600 bits per second FOR COM(USB):
-  //Serial.begin(baudRate); 
-  // initialize serial coms for UART:
-  //Serial2.begin(baudRate);
 
   while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB, on LEONARDO, MICRO, YUN, and other 32u4 based boards.
