@@ -324,10 +324,6 @@ void Task1( void *pvParameters __attribute__((unused)) )  // This is a Task.
           SetOffsets(offset4);
           break;
       }
-    
-      //Serial.print("Active Sensor = ");
-      //Serial.println(activeSensor);
-      
       mpuIntStatus = mpu.getIntStatus();
     
       // get current FIFO count
@@ -360,43 +356,14 @@ void Task1( void *pvParameters __attribute__((unused)) )  // This is a Task.
           mpu.dmpGetGravity(&gravity, &q);
           mpu.dmpGetLinearAccel(&aaReal, &aa, &gravity);
           mpu.dmpGetLinearAccelInWorld(&aaWorld, &aaReal, &q);
-          //Serial.print("aworld\t");
           double x = (double) aaWorld.x / 8192.0;
-          //Serial.print(x, 5);
-          //Serial.print("\t");
           double y = (double) aaWorld.y / 8192.0;
-          //Serial.print(y, 5);
-          //Serial.print("\t");
           double z = (double) aaWorld.z / 8192.0;
-          //Serial.println(z, 5);
           int arrayCursor = activeSensor * 3;
           sensorReadings[arrayCursor] = x;
           sensorReadings[arrayCursor + 1] = y;
           sensorReadings[arrayCursor + 2] = z;
-          /*
-          double readings[3] = {x, y, z};
-          char deviceCode[1] = {'w'};
-          char buffer[64];
-          unsigned len = sendConfig(buffer,deviceCode,readings);
-          sendSerialData(buffer,len);
-          DataPacket results; 
-          deserialize(&results, buffer);
-          
-          Serial.print("Readings 0 is ");
-          Serial.println(results.readings0[0]);
-          Serial.print(" Readings 1 is ");
-          Serial.println(results.readings0[1]);*/
       }
-    
-      //if(activeSensor == 4) {
-      /*
-          for(int i=0; i<14; i++) {
-              Serial.print(sensorReadings[i], 5);
-              Serial.print("\t");
-          }
-          Serial.println(sensorReadings[14], 5);*/
-      //}
-    
       activeSensor++;
       activeSensor %= 5;
       Serial.println("Obtained readings");
@@ -489,8 +456,6 @@ void setup() {
 
         // enable Arduino interrupt detection
         Serial.println(F("Enabling interrupt detection ..."));
-        //Timer1.initialize(100000);         // initialize timer1, and set a 0.1 second period
-        //Timer1.attachInterrupt(dmpDataReady);  // attaches dmpDataReady() as a timer overflow interrupt
         mpuIntStatus = mpu.getIntStatus();
 
         // set our DMP Ready flag so the main loop() function knows it's okay to use it
@@ -515,76 +480,73 @@ void setup() {
     pinMode(SENSOR3_AD0, OUTPUT);
     pinMode(SENSOR4_AD0, OUTPUT);
 
-
-  while (!Serial) {
-    ; // wait for serial port to connect. Needed for native USB, on LEONARDO, MICRO, YUN, and other 32u4 based boards.
-  }
-
-  // Semaphores are useful to stop a Task proceeding, where it should be paused to wait,
-  // because it is sharing a resource, such as the Serial port.
-  // Semaphores should only be used whilst the scheduler is running, but we can set it up here.
-  if ( xSerialSemaphore == NULL )  // Check to confirm that the Serial Semaphore has not already been created.
-  {
-    xSerialSemaphore = xSemaphoreCreateMutex();  // Create a mutex semaphore we will use to manage the Serial Port
-    if ( ( xSerialSemaphore ) != NULL )
-      xSemaphoreGive( ( xSerialSemaphore ) );  // Make the Serial Port available for use, by "Giving" the Semaphore.
-  }
-
-  // Handshake
-  int isReady = 0;
-
-  while (isReady == 0)
-  {
-    while (Serial2.available() == 0)
-    {
-      // do nothing if there is no input, wait for input in serial.
-      Serial.println("Waiting for RPi...");
+    while (!Serial) {
+      ; // wait for serial port to connect. Needed for native USB, on LEONARDO, MICRO, YUN, and other 32u4 based boards.
     }
-
-    // if there is an incoming message, read the message
-    while (Serial2.available() > 0)
+  
+    // Semaphores are useful to stop a Task proceeding, where it should be paused to wait,
+    // because it is sharing a resource, such as the Serial port.
+    // Semaphores should only be used whilst the scheduler is running, but we can set it up here.
+    if ( xSerialSemaphore == NULL )  // Check to confirm that the Serial Semaphore has not already been created.
     {
-      char message = Serial2.read();
-      if (message == '1')
+      xSerialSemaphore = xSemaphoreCreateMutex();  // Create a mutex semaphore we will use to manage the Serial Port
+      if ( ( xSerialSemaphore ) != NULL )
+        xSemaphoreGive( ( xSerialSemaphore ) );  // Make the Serial Port available for use, by "Giving" the Semaphore.
+    }
+  
+    // Handshake
+    int isReady = 0;
+  
+    while (isReady == 0)
+    {
+      while (Serial2.available() == 0)
       {
-        Serial.print("Message Received: ");
+        // do nothing if there is no input, wait for input in serial.
+        Serial.println("Waiting for RPi...");
+      }
+  
+      // if there is an incoming message, read the message
+      while (Serial2.available() > 0)
+      {
+        char message = Serial2.read();
+        if (message == '1')
+        {
+          Serial.print("Message Received: ");
+          Serial.println(message);
+          isReady = 1;
+          Serial2.println("ACK");
+          Serial.println("Sent ACK");
+        }
+        else
+        {
+        Serial.println("Invalid Message");
         Serial.println(message);
-        isReady = 1;
-        Serial2.println("ACK");
-        Serial.println("Sent ACK");
-      }
-      else
-      {
-      Serial.println("Invalid Message");
-      Serial.println(message);
+        }
       }
     }
-  }
-
-
-  // Now set up two Tasks to run independently.
-  xTaskCreate(
-    Task1
-    ,  (const portCHAR *)"DigitalRead"  // A name just for humans
-    ,  256  // This stack size can be checked & adjusted by reading the Stack Highwater
-    ,  NULL
-    ,  2  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
-    ,  NULL );
-
-  xTaskCreate(
-    Task2
-    ,  (const portCHAR *) "AnalogRead"
-    ,  256  // Stack size
-    ,  NULL
-    ,  1  // Priority
-    ,  NULL );
-
-
-  // Now the Task scheduler, which takes over control of scheduling individual Tasks, is automatically started.
+  
+  
+    // Now set up two Tasks to run independently.
+    xTaskCreate(
+      Task1
+      ,  (const portCHAR *)"DigitalRead"  // A name just for humans
+      ,  256  // This stack size can be checked & adjusted by reading the Stack Highwater
+      ,  NULL
+      ,  2  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
+      ,  NULL );
+  
+    xTaskCreate(
+      Task2
+      ,  (const portCHAR *) "AnalogRead"
+      ,  256  // Stack size
+      ,  NULL
+      ,  1  // Priority
+      ,  NULL );
+  
+  
+    // Now the Task scheduler, which takes over control of scheduling individual Tasks, is automatically started.
 
 }
-
-
 
 // ================================================================
 // ===                    MAIN PROGRAM LOOP                     ===
