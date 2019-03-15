@@ -76,7 +76,7 @@ import csv
 
 def run_algo(clf, data_set):
     print('CLF: {}, Dataset: {}'.format(clf, data_set))
-    file_path = 'test_data/' + data_set + '.csv'
+    file_path = '../test_data/' + data_set + '.csv'
     dataframe = pandas.read_csv(file_path, header=None)
     dataset = dataframe.values
     # data in columns is continuous
