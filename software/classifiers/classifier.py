@@ -5,39 +5,58 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, accuracy_score
 import numpy as np
-import pandas
-import csv
+import pandas as pd
+# import pickle
 
 def run_perceptron(X_train, X_test, y_train, y_test):
     clf = Perceptron(tol=1e-3, random_state=0)
     clf.fit(X_train, y_train) 
+    # load the model from disk
+    # loaded_model = pickle.load(open(filename, 'rb'))
+    # result = loaded_model.score(X_test, Y_test)
     prediction = clf.predict(X_test)
     accuracy = accuracy_score(prediction, y_test)
+    # save the model to disk
+    # filename = 'finalized_model.sav'
+    # pickle.dump(clf, open(filename, 'wb'))
     return prediction, accuracy
 
 
 def run_knn(X_train, X_test, y_train, y_test, k):
+    # load the model from disk
+    # clf = pickle.load(open(filename, 'rb'))
+    # result = clf.score(X_test, Y_test)
     clf = KNeighborsClassifier(n_neighbors=k)
     clf.fit(X_train, y_train) 
     prediction = clf.predict(X_test)
     accuracy = accuracy_score(prediction, y_test)
+    # save the model to disk
+    # filename = 'finalized_model.sav'
+    # pickle.dump(clf, open(filename, 'wb'))
     return prediction, accuracy
 
 
 def run_svm(X_train, X_test, y_train, y_test):
+    # load the model from disk
+    # clf = pickle.load(open(filename, 'rb'))
+    # result = clf.score(X_test, Y_test)
     clf = svm.SVC(gamma=0.01, C=10.)
     clf.fit(X_train, y_train) 
     prediction = clf.predict(X_test)
     accuracy = accuracy_score(prediction, y_test)
+    # save the model to disk
+    # filename = 'finalized_model.sav'
+    # pickle.dump(clf, open(filename, 'wb'))
     return prediction, accuracy
 
 
-file_name = 'bezdekIris'
+# file_name = 'bezdekIris'
 # file_name = 'pulsar_stars'
 # file_name = 'heart'
 file_name = 'hard'
+# file_name = 'data'
 file_path = '../test_data/' + file_name + '.csv'
-dataframe = pandas.read_csv(file_path, header=None)
+dataframe = pd.read_csv(file_path, header=None)
 dataset = dataframe.values
 X = dataset[:,0:len(dataset[0])-1].astype(float)
 y = dataset[:,len(dataset[0])-1].astype(float)
@@ -57,13 +76,12 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 # does not work for heart
 # over 98% for pulsar_stars, training is slow with large dataset, can use saved trained model
 prediction, accuracy = run_ann(X_train, X_test, y_train, y_test, file_name+'_model')
-# k_fold_cross_validate(X, y, file_name+'_model')
+k_fold_cross_validate(X, y, file_name+'_model')
 
 # 50% - 80% for bezdekIris
 # does not work for heart
 # about 97% for pulsar_stars
 # prediction, accuracy = run_perceptron(X_train, X_test, y_train, y_test)
-
 
 print(confusion_matrix(y_test, prediction))
 print("Accuracy: %.2f%%" % (accuracy*100))

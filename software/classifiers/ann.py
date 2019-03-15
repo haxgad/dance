@@ -1,26 +1,9 @@
 import numpy as np
-from keras.models import Sequential, model_from_json
+from keras.models import Sequential, load_model
 from keras.layers import Dense
 from keras.utils import np_utils
 from sklearn.model_selection import StratifiedKFold
 import os.path
-
-
-def save_model(model, model_name):
-    # saving model
-    json_model = model.to_json()
-    open('../models/' + model_name + '.json', 'w').write(json_model)
-    # saving weights
-    model.save_weights('../models/' + model_name + '_weights.h5', overwrite=True)
-
-
-def load_model(model_name):
-    # loading model
-    model = model_from_json(open('../models/' + model_name + '.json').read())
-    model.load_weights('../models/' + model_name + '_weights.h5')
-    model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-    return model
-
 
 def build_nn_model(num_feature, num_class):
 		# create model
@@ -35,8 +18,8 @@ def build_nn_model(num_feature, num_class):
 
 def run_ann(X_train, X_test, y_train, y_test, model_name): 
 
-	if(os.path.isfile('../models/' + model_name + '.json')):
-		model = load_model(model_name)
+	if(os.path.isfile('../models/' + model_name + '.h5')):
+		model = load_model('../models/' + model_name + '.h5')
 	else:
 		num_feature = len(X_train[0])
 		num_class = max(np.amax(y_train).astype(int), np.amax(y_test).astype(int))+1
@@ -44,21 +27,21 @@ def run_ann(X_train, X_test, y_train, y_test, model_name):
 	
 	model.fit(X_train, y_train, epochs=200, batch_size=10, verbose=0)
 
-	save_model(model, model_name)
+	model.save('../models/' + model_name + '.h5')
 	prediction = model.predict_classes(X_test, verbose=0)
 	accuracy = model.evaluate(X_test, y_test, verbose=0)[1]
 	return prediction, accuracy
 
 def k_fold_cross_validate(X, y, model_name):
+	model = load_model('../models/' + model_name + '.h5')
 
-	model = load_model(model_name)
 	seed = 7
 	np.random.seed(seed)
 	cvscores = []
 	kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
 	
 	for train, test in kfold.split(X, y):
-		model.fit(X[train], y[train], epochs=150, batch_size=10, verbose=0)
+		# model.fit(X[train], y[train], epochs=150, batch_size=10, verbose=0)
 		scores = model.evaluate(X[test], y[test], verbose=0)
 		print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
 		cvscores.append(scores*100)
