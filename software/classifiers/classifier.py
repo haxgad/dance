@@ -32,7 +32,7 @@ def run_svm(X_train, X_test, y_train, y_test):
     return prediction, accuracy
 
 
-# file_name = 'bezdekIris'
+file_name = 'bezdekIris'
 # file_name = 'pulsar_stars'
 # file_name = 'heart'
 file_name = 'hard'
@@ -57,7 +57,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 # does not work for heart
 # over 98% for pulsar_stars, training is slow with large dataset, can use saved trained model
 prediction, accuracy = run_ann(X_train, X_test, y_train, y_test, file_name+'_model')
-k_fold_cross_validate(X, y, file_name+'_model')
+# k_fold_cross_validate(X, y, file_name+'_model')
 
 # 50% - 80% for bezdekIris
 # does not work for heart
