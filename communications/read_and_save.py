@@ -11,13 +11,13 @@ if __name__ == "__main__":
 
     # Infinite loop
     index = 0
-    with open('output.txt', 'rb') as csv_file:
-        writer_obj = csv.writer(csv_file)
-        try:
-            while 1:
+    with open('output.txt', 'a') as csv_file:
+        writer_obj = writer(csv_file)
+        while 1:
+            try:
                 data_list, error = client.receive_serialized_data()
                 print("Index: {}".format(index))
                 index += 1
                 writer_obj.writerow(data_list)
-        except KeyboardInterrupt:
-            break
+            except KeyboardInterrupt:
+                break

@@ -26,22 +26,22 @@ class UARTClient:
         # Read the packet's size
         first_byte = self.ser.read()
         # # second_byte = self.ser.read()
-        packet_size = int.from_bytes(first_byte, byteorder='big')
+        packet_size = int.from_bytes(first_byte, byteorder='big', signed=True)
 
         # Hardcode the packet's size
-        packet_size = 24
+        packet_size = 19
         for _ in iter(range(packet_size)):
             first_byte = self.ser.read()
             second_byte = self.ser.read()
-            value = int.from_bytes(second_byte + first_byte, byteorder='big')
+            value = int.from_bytes(second_byte + first_byte, byteorder='big', signed=True)
             readings.append(value)
-            checksum ^= int.from_bytes(first_byte, byteorder='big')
-            checksum ^= int.from_bytes(second_byte, byteorder='big')
+            checksum ^= int.from_bytes(first_byte, byteorder='big', signed=True)
+            checksum ^= int.from_bytes(second_byte, byteorder='big', signed=True)
 
         # Read the checksum
         first_byte = self.ser.read()
         second_byte = self.ser.read()
-        package_checksum = int.from_bytes(second_byte + first_byte, byteorder='big')
+        package_checksum = int.from_bytes(second_byte + first_byte, byteorder='big', signed=True)
 
         print("\nChecksum calculated: {}".format(checksum))
         print("Checksum package: {}".format(package_checksum))
