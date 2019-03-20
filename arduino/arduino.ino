@@ -150,7 +150,7 @@ void TaskAnalogRead( void *pvParameters __attribute__((unused)) )  // This is a 
       xSemaphoreGive( xSerialSemaphore ); // Now free or "Give" the Serial Port for others.
     }
 
-    vTaskDelay(100);  // one tick delay (15ms) in between reads for stability
+    vTaskDelay(200);  // one tick delay (15ms) in between reads for stability
   }
 }
 // void HandShake( void *pvParameters __attribute__((unused)) ) //http://www.robopapa.com/Projects/RaspberryPiArduinoCommunication
@@ -262,11 +262,14 @@ unsigned sendConfig(char * buffer, unsigned char deviceCode[],double readings[])
 void sendSerialData(char *buffer, int len)
 {
   Serial.println(len);
+  char startByte = 'A';
+  Serial2.write(startByte);
   for(int i=0; i<len; i++)
   {
   // Serial.print("a");
   Serial2.write(buffer[i]);
   }
+  //Serial2.println("whatever whatever whatever whatever whatever whatever whatever whatever END");
 }
 
 /*--------------------------------------------------*/
@@ -283,7 +286,7 @@ void Task1( void *pvParameters __attribute__((unused)) )  // This is a Task.
     // If the semaphore is not available, wait 5 ticks of the Scheduler to see if it becomes free.
     if ( xSemaphoreTake( xSerialSemaphore, ( TickType_t ) 5 ) == pdTRUE )
     {
-      Serial.println("Obtaining readings from sensors");
+      //Serial.println("Obtaining readings from sensors");
       mpuInterrupt = true;
       
       // if programming failed, don't try to do anything
@@ -309,7 +312,7 @@ void Task1( void *pvParameters __attribute__((unused)) )  // This is a Task.
     
       // reset interrupt flag and get INT_STATUS byte
       mpuInterrupt = false;
-    
+      for(activeSensor=0; activeSensor<5; activeSensor++) {
       switch (activeSensor) {
         case 0:
           digitalWrite(SENSOR0_AD0, LOW);
@@ -353,9 +356,6 @@ void Task1( void *pvParameters __attribute__((unused)) )  // This is a Task.
           break;
       }
     
-      //Serial.print("Active Sensor = ");
-      //Serial.println(activeSensor);
-      
       mpuIntStatus = mpu.getIntStatus();
     
       // get current FIFO count
@@ -401,38 +401,17 @@ void Task1( void *pvParameters __attribute__((unused)) )  // This is a Task.
           sensorReadings[arrayCursor] = x;
           sensorReadings[arrayCursor + 1] = y;
           sensorReadings[arrayCursor + 2] = z;
-          /*
-          double readings[3] = {x, y, z};
-          char deviceCode[1] = {'w'};
-          char buffer[64];
-          unsigned len = sendConfig(buffer,deviceCode,readings);
-          sendSerialData(buffer,len);
-          DataPacket results; 
-          deserialize(&results, buffer);
           
-          Serial.print("Readings 0 is ");
-          Serial.println(results.readings0[0]);
-          Serial.print(" Readings 1 is ");
-          Serial.println(results.readings0[1]);*/
       }
-    
-      //if(activeSensor == 4) {
-      /*
-          for(int i=0; i<14; i++) {
-              Serial.print(sensorReadings[i], 5);
-              Serial.print("\t");
-          }
-          Serial.println(sensorReadings[14], 5);*/
-      //}
-    
-      activeSensor++;
-      activeSensor %= 5;
-      Serial.println("Obtained readings");
 
+      //activeSensor++;
+      //activeSensor %= 5;
+      //Serial.println("Obtained readings");
+      }
       xSemaphoreGive( xSerialSemaphore ); // Now free or "Give" the Serial Port for others.
     }
 
-    vTaskDelay(200);  // one tick delay (15ms) in between reads for stability
+    vTaskDelay(60);  // one tick delay (15ms) in between reads for stability
   }
 }
 void Task2( void *pvParameters __attribute__((unused)) )  // This is a Task.
@@ -446,27 +425,27 @@ void Task2( void *pvParameters __attribute__((unused)) )  // This is a Task.
     // If the semaphore is not available, wait 5 ticks of the Scheduler to see if it becomes free.
     if ( xSemaphoreTake( xSerialSemaphore, ( TickType_t ) 5 ) == pdTRUE )
     {
-      Serial.println("Sending Data to RPi");
+      //Serial.println("Sending Data to RPi");
       // Serial2.println("Data reading");
       unsigned char deviceCode[1];
       //double readings[1];
       char buffer[64];
-      Serial.print("Sensor readings are: ");
-      for(int i=0; i<14; i++) {
-              Serial.print(sensorReadings[i], 5);
-              Serial.print("\t");
-          }
-          Serial.println(sensorReadings[14], 5);
+//      Serial.print("Sensor readings are: ");
+//      for(int i=0; i<14; i++) {
+//              Serial.print(sensorReadings[i], 5);
+//              Serial.print("\t");
+//          }
+//          Serial.println(sensorReadings[14], 5);
       unsigned len = sendConfig(buffer,deviceCode,sensorReadings);
-      DataPacket results; 
-      deserialize(&results, buffer);
+//      DataPacket results; 
+//      deserialize(&results, buffer);
       sendSerialData(buffer,len);
-      Serial.println("Done");
+      //Serial.println("Done");
 
       xSemaphoreGive( xSerialSemaphore ); // Now free or "Give" the Serial Port for others.
     }
 
-    vTaskDelay(200);  // one tick delay (15ms) in between reads for stability
+    vTaskDelay(60);  // one tick delay (15ms) in between reads for stability
   }
 }
 
@@ -484,7 +463,7 @@ void setup() {
         Fastwire::setup(400, true);
     #endif
 
-    Serial.begin(9600);
+    Serial.begin(baudRate);
     while (!Serial); // wait for Leonardo enumeration, others continue immediately
 
     // initialize device
@@ -496,10 +475,10 @@ void setup() {
     Serial.println(mpu.testConnection() ? F("MPU6050 connection successful") : F("MPU6050 connection failed"));
 
     // wait for ready
-    Serial.println(F("\nSend any character to begin DMP programming and demo: "));
-    while (Serial.available() && Serial.read()); // empty buffer
-    while (!Serial.available());                 // wait for data
-    while (Serial.available() && Serial.read()); // empty buffer again
+    //Serial.println(F("\nSend any character to begin DMP programming and demo: "));
+    //while (Serial.available() && Serial.read()); // empty buffer
+    //while (!Serial.available());                 // wait for data
+    //while (Serial.available() && Serial.read()); // empty buffer again
 
     // load and configure the DMP
     Serial.println(F("Initializing DMP..."));
@@ -539,13 +518,8 @@ void setup() {
     pinMode(SENSOR3_AD0, OUTPUT);
     pinMode(SENSOR4_AD0, OUTPUT);
 
-    Serial2.begin(9600);
+    Serial2.begin(baudRate);
 
-    
-  // initialize serial communication at 9600 bits per second FOR COM(USB):
-  //Serial.begin(baudRate); 
-  // initialize serial coms for UART:
-  //Serial2.begin(baudRate);
 
   while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB, on LEONARDO, MICRO, YUN, and other 32u4 based boards.
