@@ -22,6 +22,10 @@ class UARTClient:
     def receive_serialized_data(self):
         checksum = 0
         readings = []
+        value = 0
+        while value != 65: # character 'A'
+            first_byte = self.ser.read()
+            value = int.from_bytes(first_byte, byteorder='big')
 
         # Read the packet's size
         first_byte = self.ser.read()
@@ -42,9 +46,9 @@ class UARTClient:
         first_byte = self.ser.read()
         second_byte = self.ser.read()
         package_checksum = int.from_bytes(second_byte + first_byte, byteorder='big', signed=True)
-
-        print("\nChecksum calculated: {}".format(checksum))
-        print("Checksum package: {}".format(package_checksum))
+        print(checksum, package_checksum)
+        # print("\nChecksum calculated: {}".format(checksum))
+        # print("Checksum package: {}".format(package_checksum))
 
         # Return received message + error message
         return readings, None

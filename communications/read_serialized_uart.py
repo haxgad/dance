@@ -14,6 +14,4 @@ if __name__ == "__main__":
         message, error = client.receive_serialized_data()
         # print("{}: {}".format(index, repr(message)))
         # print("{}: ".format(index), end='')
-        print(index)
-        print(message)
-        index += 1
+        # print(message)
