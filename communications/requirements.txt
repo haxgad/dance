@@ -1,0 +1,4 @@
+numpy==1.13.3
+pandas==0.20.3
+pycrypto==2.6.1
+pyserial==3.4
