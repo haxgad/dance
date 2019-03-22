@@ -1,5 +1,25 @@
 import serial
+import logging
+# from logger import create_logger
 
+def create_logger(name, filename='/home/pi/comms/comms.log'):
+    logger = logging.getLogger(name)
+    logger.setLevel(logging.DEBUG)
+
+    # create a file handler
+    handler = logging.FileHandler(filename)
+    handler.setLevel(logging.DEBUG)
+
+    # create a logging format
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    handler.setFormatter(formatter)
+
+    # add the handlers to the logger
+    logger.addHandler(handler)
+
+    return logger
+
+logger = create_logger('UART')
 
 class UARTClient:
     def __init__(self, port):
@@ -30,10 +50,16 @@ class UARTClient:
         # Read the packet's size
         first_byte = self.ser.read()
         # # second_byte = self.ser.read()
-        packet_size = int.from_bytes(first_byte, byteorder='big', signed=True)
+        size_received = int.from_bytes(first_byte, byteorder='big', signed=True)
+        # print("Size: {}".format(size_received))
 
         # Hardcode the packet's size
         packet_size = 19
+
+        # Ignore the first 2 bytes - some comms problems from arduino (?)
+        # first_byte = self.ser.read()
+        # second_byte = self.ser.read()
+
         for _ in iter(range(packet_size)):
             first_byte = self.ser.read()
             second_byte = self.ser.read()
@@ -44,9 +70,10 @@ class UARTClient:
 
         # Read the checksum
         first_byte = self.ser.read()
-        second_byte = self.ser.read()
-        package_checksum = int.from_bytes(second_byte + first_byte, byteorder='big', signed=True)
-        print(checksum, package_checksum)
+        # second_byte = self.ser.read()
+        package_checksum = int.from_bytes(first_byte, byteorder='big', signed=True)
+        # print(checksum, package_checksum)
+        logger.debug("{} {}".format(checksum, package_checksum))
         # print("\nChecksum calculated: {}".format(checksum))
         # print("Checksum package: {}".format(package_checksum))
 
@@ -66,24 +93,32 @@ class UARTClient:
     def handshake(self):
         # Send a `start` message through Serial
         error = None
-        while 1:
-            error = self.send('1')
-            if error is not None:
-                print("ERROR:", error)
-                continue
-            break
-
-        # Receive an `ack` message from Serial
-        while 1:
-            received_msg, error = self.receive()
-            if error is not None:
-                print("ERROR:", error)
-            elif received_msg == 'ACK':
+        is_ready = False
+        while not is_ready:
+            while 1:
+                error = self.send('1')
+                if error is not None:
+                    print("ERROR:", error)
+                    continue
                 break
-            else:
-                print("Expected to receive a text 'ACK', but instead got {}".format(repr(received_msg)))
 
-        print('Handshake successfully.')
+            # Receive an `ack` message from Serial
+            while 1:
+                received_msg, error = self.receive()
+                if error is not None:
+                    # print("ERROR:", error)
+                    logger.error(error)
+                elif received_msg == 'ACK':
+                    is_ready = True
+                    break
+                else:
+                    # print("Expected to receive a text 'ACK', but instead got {}".format(repr(received_msg)))
+                    logger.debug("Expected to receive a text 'ACK', but instead got {}".format(repr(received_msg)))
+                if received_msg == '':
+                    break
+
+        # print('Handshake successfully.')
+        logger.info('Handshake successfully.')
 
 if __name__ == "__main__":
     serial_port = '/dev/ttyAMA0'
