@@ -12,6 +12,6 @@ if __name__ == "__main__":
     while 1:
         start = default_timer()
         message, error = client.receive()
-        print(default_timer() - start)
         print("{}: {}".format(index, repr(message)))
+        print(default_timer() - start)
         index += 1

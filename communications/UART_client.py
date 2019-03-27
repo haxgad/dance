@@ -46,6 +46,7 @@ class UARTClient:
         while value != 65: # character 'A'
             first_byte = self.ser.read()
             value = int.from_bytes(first_byte, byteorder='big')
+            logger.debug("Has not received character 'A' but {}".format(value))
 
         # Read the packet's size
         first_byte = self.ser.read()
@@ -107,7 +108,7 @@ class UARTClient:
                 received_msg, error = self.receive()
                 if error is not None:
                     # print("ERROR:", error)
-                    logger.error(error)
+                    logger.debug(error)
                 elif received_msg == 'ACK':
                     is_ready = True
                     break

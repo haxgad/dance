@@ -1,6 +1,7 @@
 from UART_client import UARTClient
 from pprint import pprint
 from csv import writer
+import os.path
 import logging
 # from logger import create_logger
 
@@ -29,13 +30,25 @@ if __name__ == "__main__":
     client = UARTClient(serial_port)
     client.handshake()
 
+
+    # Get filename
+    count = 0
+    prefix_name = '/home/pi/comms/output'
+    while os.path.isfile(prefix_name + str(count) + '.txt'):
+        count += 1
+
+    filename = prefix_name + str(count) + '.txt'
+
     # Infinite loop
     index = 0
     while 1:
-        with open('/home/pi/comms/output.txt', 'a') as csv_file:
-            writer_obj = writer(csv_file)
-            data_list, error = client.receive_serialized_data()
-            # print("Index: {}".format(index))
-            logger.info("Index: {}".format(index))
-            index += 1
-            writer_obj.writerow(data_list)
+        try:
+            with open(filename, 'a') as csv_file:
+                writer_obj = writer(csv_file)
+                data_list, error = client.receive_serialized_data()
+                # print("Index: {}".format(index))
+                logger.info("Index: {}".format(index))
+                index += 1
+                writer_obj.writerow(data_list)
+        except Exception as exc:
+            logger.debug(str(exc))
