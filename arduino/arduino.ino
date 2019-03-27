@@ -175,7 +175,7 @@ unsigned sendConfig(char * buffer, unsigned char deviceCode[],double readings[])
 // Adapted from lecture notes
 void sendSerialData(char *buffer, int len)
 {
-  Serial.println(len);
+  //Serial.println(len);
   char startByte = 'A';
   Serial2.write(startByte);
   for(int i=0; i<len; i++)
@@ -280,7 +280,7 @@ void Task1( void *pvParameters __attribute__((unused)) )  // This is a Task.
           // reset so we can continue cleanly
           mpu.resetFIFO();
           fifoCount = mpu.getFIFOCount();
-          Serial.println(F("FIFO overflow!"));
+          //Serial.println(F("FIFO overflow!"));
     
       // otherwise, check for DMP data ready interrupt (this should happen frequently)
       } //else if (mpuIntStatus & _BV(MPU6050_INTERRUPT_DMP_INT_BIT)) {
