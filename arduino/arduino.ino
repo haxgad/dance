@@ -1,6 +1,20 @@
+#include <Arduino.h>
+
+// Global Variables
+float sensorValue = 0;   // Variable to store value from analog read
+float halvedVoltage = 0;
+float voltage = 0;
+float current = 0;       // Calculated current value
+float mCurrent = 0;
+float power = 0;
+float energy = 0;
 
 // Static Variables
 int baudRate = 9600;
+const int SENSOR_PIN = A0;  // Input pin for measuring Vout
+const int SENSOR_PIN1 = A1;  // Input pin for measuring divided voltage
+const float RS = 0.1;          // Shunt resistor value (in ohms)
+const int VOLTAGE_REF = 5;  // Reference voltage for analog read
 
 #include "I2Cdev.h"
 
@@ -96,9 +110,9 @@ typedef struct DataPacket{
 //  int16_t sensorID4;
   int16_t readings4[3];
   int16_t powerID;
-  int16_t voltage;
-  int16_t current;
-  int16_t power;
+  int16_t voltageV;
+  int16_t currentV;
+  int16_t powerV;
 } DataPacket;
 
 // Serialize method, adapted from lecture notes
@@ -164,9 +178,9 @@ unsigned sendConfig(char * buffer, unsigned char deviceCode[],double readings[])
   pkt.readings4[1] = readings[13] * 1000;
   pkt.readings4[2] = readings[14] * 1000;
   pkt.powerID = 9;
-  pkt.voltage = 10;
-  pkt.current = 5;
-  pkt.power = 3;
+  pkt.voltageV = voltage * 1000;
+  pkt.currentV = current * 1000;
+  pkt.powerV = power * 1000;
   unsigned len = serialize(buffer, &pkt, sizeof(pkt));
   return len;
 }
@@ -183,7 +197,6 @@ void sendSerialData(char *buffer, int len)
   // Serial.print("a");
   Serial2.write(buffer[i]);
   }
-  //Serial2.println("whatever whatever whatever whatever whatever whatever whatever whatever END");
 }
 
 /*--------------------------------------------------*/
@@ -271,7 +284,7 @@ void Task1( void *pvParameters __attribute__((unused)) )  // This is a Task.
       }
     
       mpuIntStatus = mpu.getIntStatus();
-    
+
       // get current FIFO count
       fifoCount = mpu.getFIFOCount();
     
@@ -346,15 +359,60 @@ void Task2( void *pvParameters __attribute__((unused)) )  // This is a Task.
 //          }
 //          Serial.println(sensorReadings[14], 5);
       unsigned len = sendConfig(buffer,deviceCode,sensorReadings);
-//      DataPacket results; 
-//      deserialize(&results, buffer);
+      DataPacket results; 
+      deserialize(&results, buffer);
       sendSerialData(buffer,len);
+//      Serial.print("Deserialized Voltage is :");
+//      Serial.print(results.voltageV);
+//      Serial.println();
+//      
+//      Serial.print("Deserialized Current is :");
+//      Serial.print(results.currentV);
+//      Serial.println();
+//      
+//      Serial.print("Deserialized Power is :");
+//      Serial.print(results.powerV);
+//      Serial.println();
       //Serial.println("Done");
 
       xSemaphoreGive( xSerialSemaphore ); // Now free or "Give" the Serial Port for others.
     }
 
     vTaskDelay(4);  // one tick delay (15ms) in between reads for stability
+  }
+}
+void Task3( void *pvParameters __attribute__((unused)) )  // This is a Task.
+{
+  for (;;)
+  {
+
+    // See if we can obtain or "Take" the Serial Semaphore.
+    // If the semaphore is not available, wait 5 ticks of the Scheduler to see if it becomes free.
+    if ( xSemaphoreTake( xSerialSemaphore, ( TickType_t ) 5 ) == pdTRUE )
+    {
+    sensorValue = analogRead(SENSOR_PIN);
+    halvedVoltage = analogRead(SENSOR_PIN1);
+
+    voltage = halvedVoltage * (5/1023.0) * 2;
+
+    // Remap the ADC value into a voltage number (5V reference)
+    sensorValue = (sensorValue * VOLTAGE_REF) / 1023;
+
+    // Follow the equation given by the INA169 datasheet to
+    // determine the current flowing through RS. Assume RL = 10k
+    // Is = (Vout x 1k) / (RS x RL)
+    current = sensorValue / (10 * RS);
+    mCurrent = current * 1000; 
+    
+    power = mCurrent * VOLTAGE_REF;
+
+    energy = energy + (power / 1000);
+      xSemaphoreGive( xSerialSemaphore ); // Now free or "Give" the Serial Port for others.
+    }
+
+
+
+    vTaskDelay(100);  // one tick delay (15ms) in between reads for stability
   }
 }
 
@@ -445,7 +503,7 @@ void setup() {
   }
 
   // Handshake
-  int isReady = 1;
+  int isReady = 0;
 
   while (isReady == 0)
   {
@@ -479,25 +537,31 @@ void setup() {
   // Now set up two Tasks to run independently.
   xTaskCreate(
     Task1
-    ,  (const portCHAR *)"DigitalRead"  // A name just for humans
-    ,  256  // This stack size can be checked & adjusted by reading the Stack Highwater
+    ,  (const portCHAR *)"ReadSensor"  // A name just for humans
+    ,  512  // This stack size can be checked & adjusted by reading the Stack Highwater
     ,  NULL
     ,  2  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
     ,  NULL );
 
   xTaskCreate(
     Task2
-    ,  (const portCHAR *) "AnalogRead"
-    ,  256  // Stack size
+    ,  (const portCHAR *) "Send"
+    ,  512  // Stack size
     ,  NULL
     ,  1  // Priority
     ,  NULL );
 
+    xTaskCreate(
+    Task3
+    ,  (const portCHAR *) "ReadPower"
+    ,  256  // Stack size
+    ,  NULL
+    ,  0  // Priority
+    ,  NULL );
+
 
   // Now the Task scheduler, which takes over control of scheduling individual Tasks, is automatically started.
-
 }
-
 
 
 // ================================================================
