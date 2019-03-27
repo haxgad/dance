@@ -1,4 +1,6 @@
+import numpy as np
 from keras.models import load_model
+from sklearn import preprocessing
 
 class Classifier:
     def __init__(self, model_path):
@@ -29,21 +31,24 @@ class Classifier:
         return np.array(X)
 
     def predict(self, input_data):
-        # featrues = data_process(input_data)
-        return self.model.predict_classes(input_data, verbose=0)
+        features = preprocessing.normalize([self.data_process(input_data)])
+        return self.model.predict_classes(features, verbose=0)
 
 
 # test purpose, remove when integrating
 import pandas as pd
-import numpy as np
-from sklearn.metrics import confusion_matrix
+# from sklearn.metrics import confusion_matrix
 
-file_name = 'pulsar_stars'
-file_path = '../test_data/' + file_name + '.csv'
-dataframe = pd.read_csv(file_path, header=None)
-dataset = dataframe.values
-X = dataset[:,0:len(dataset[0])-1].astype(float)
-y = dataset[:,len(dataset[0])-1].astype(float)
-clf = Classifier('../models/' + file_name + '_model.h5')
-print(clf.data_process(X[0:5]))
-print(confusion_matrix(y, clf.predict(X)))
+# file_name = 'dance_data_Mar_26'
+# file_path = '../dance_data/' + file_name + '.csv'
+# dataframe = pd.read_csv(file_path, header=None)
+# dataset = dataframe.values
+# X = preprocessing.normalize(dataset[:,0:len(dataset[0])-1].astype(float))
+# y = dataset[:,len(dataset[0])-1].astype(float)
+# clf = Classifier('../models/' + file_name + '_model.h5')
+# print(confusion_matrix(y, clf.predict(X)))
+
+dataframe = pd.read_csv("../dance_data/data_26-March/raffles_jason.txt", sep=",", header=None)
+dataset = dataframe.values[:,0:15]
+clf = Classifier('../models/dance_data_Mar_26_model.h5')
+print(clf.predict(dataset[157:182]))
