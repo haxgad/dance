@@ -1,9 +1,12 @@
 import threading
 import logging
+from csv import writer
 from queue import Queue
 import sys
 import logging
+import os.path
 
+from UART_client import UARTClient
 from classifier import Classifier
 
 def create_logger(name, filename='/home/pi/comms/comms.log'):
@@ -25,9 +28,10 @@ def create_logger(name, filename='/home/pi/comms/comms.log'):
 
 # Initialise
 logger = create_logger('root')
-BUF_SIZE = 25
+BUF_SIZE = 30
 q = Queue()
-clf = Classifier('/home/pi/comms/dance_data_Mar_26_model.h5')
+# clf = Classifier('/home/pi/comms/dance_data_Mar_26_model.h5')
+clf = Classifier('/home/pi/comms/test_model.sav')
 # print(clf.predict(dataset[157:182]))
 
 
@@ -35,6 +39,7 @@ class ProducerThread(threading.Thread):
     def __init__(self, group=None, target=None, name=None,
                  args=(), kwargs=None, verbose=None):
         super(ProducerThread,self).__init__()
+        print("Producer ready")
         self.target = target
         self.name = name
 
@@ -45,9 +50,30 @@ class ProducerThread(threading.Thread):
     def run(self):
         buffer = []
         index = 0
+
+        # Get filename to output data
+        count = 0
+        prefix_name = '/home/pi/comms/output'
+        while os.path.isfile(prefix_name + str(count) + '.txt'):
+            count += 1
+        filename = prefix_name + str(count) + '.txt'
+
         while 1:
             try:
                 data_list, error = self.client.receive_serialized_data()
+                # ToDo: Log power later
+
+                try:
+                    with open(filename, 'a') as csv_file:
+                        writer_obj = writer(csv_file)
+                        data_list, error = self.client.receive_serialized_data()
+                        # print("Index: {}".format(index))
+                        logger.info("Index: {}".format(index))
+                        index += 1
+                        writer_obj.writerow(data_list)
+                except Exception as exc:
+                    logger.debug(str(exc))
+
                 if data_list:
                     buffer.append(data_list[:15])
                     logger.info("Index: {}".format(index))
@@ -69,6 +95,7 @@ class ConsumerThread(threading.Thread):
     def __init__(self, group=None, target=None, name=None,
                  args=(), kwargs=None, verbose=None):
         super(ConsumerThread,self).__init__()
+        print("Consumer ready")
         self.target = target
         self.name = name
         self.logger = create_logger('ML', '/home/pi/comms/ml_output.log')
