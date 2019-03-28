@@ -9,6 +9,24 @@ class ServerAuth:
     def __init__(self):
         super(ServerAuth, self).__init__()
 
+    def compress_data_to_text(self, action, voltage, current, power, cumpower):
+        allowed_sizes = (8, 16, 32, 64, 128, 256)
+        output = "{}|{}|{}|{}|".format(
+                action,
+                voltage / 10,
+                current / 10,
+                power / 10)
+
+        for size in allowed_sizes:
+            if len(output) + len(str(cumpower)) <= size:
+                num_zeros = '0' * (size - len(output) - len(str(cumpower)))
+                cumpower =  num_zeros + str(cumpower)
+                break
+
+        output += cumpower
+        return output
+
+
     def encrypt_text(self, raw_text, secret_key):
         # Cryto.Random is used instead of `os.urandom()`
         # because, a report in 2006 (https://en.wikipedia.org/wiki//dev/random)

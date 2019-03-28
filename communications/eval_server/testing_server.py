@@ -6,6 +6,11 @@ from socket_client import SocketClient
 key="randomstuff12345"
 raw_text = "raffles|31|5|7|9"
 
+# actions
+# voltage 3
+# current 3
+# power  = Cur * Voltage
+# cumpower 5
 auth = ServerAuth()
 
 # cipher_text = auth.encrypt_text(raw_text, key)

@@ -27,3 +27,7 @@ class SocketClient:
         encoded_msg = self.auth.encrypt_text(message, self.secret_key)
         self.sock.sendall(encoded_msg)
         self.logger.debug('Message sent')
+
+    def send_data(self, action, voltage, current, power, cumpower):
+        message = self.auth.compress_data_to_text(action, voltage, current, power, cumpower)
+        self.send(message)
