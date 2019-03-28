@@ -23,7 +23,7 @@ logger = create_logger('UART')
 
 class UARTClient:
     def __init__(self, port):
-        self.ser = serial.Serial(port=port, baudrate=9600, timeout=3)
+        self.ser = serial.Serial(port=port, baudrate=9600, timeout=2)
         self.ser.flush()
 
     def close(self):
@@ -39,14 +39,29 @@ class UARTClient:
         # Return received message + error message
         return line_prt, None
 
+    def handshake_package(self):
+        value = 0
+        while 1:
+            for _ in range(2):
+                first_byte = self.ser.read()
+                value = int.from_bytes(first_byte, byteorder='big')
+                if value == 65:
+                    return
+                logger.debug("Has not received character 'A' but {}".format(value))
+
+            self.handshake_once()
+
+
     def receive_serialized_data(self):
         checksum = 0
         readings = []
         value = 0
-        while value != 65: # character 'A'
-            first_byte = self.ser.read()
-            value = int.from_bytes(first_byte, byteorder='big')
-            logger.debug("Has not received character 'A' but {}".format(value))
+        # while value != 65: # character 'A'
+        #     first_byte = self.ser.read()
+        #     value = int.from_bytes(first_byte, byteorder='big')
+        #     logger.debug("Has not received character 'A' but {}".format(value))
+
+        self.handshake_package()
 
         # Read the packet's size
         first_byte = self.ser.read()
@@ -91,6 +106,24 @@ class UARTClient:
         except Exception as exc:
             return str(exc)
 
+    def handshake_once(self):
+        # Send a `start` message through Serial
+        error = None
+        error = self.send('1')
+        if error is not None:
+            logger.error("ERROR:", error)
+
+        received_msg, error = self.receive()
+        if error is not None:
+            logger.debug(error)
+        # elif received_msg == 'ACK':
+        elif 'A' in received_msg and 'C' in received_msg and 'K' in received_msg:
+            logger.info('Handshake successfully.')
+        else:
+            # print("Expected to receive a text 'ACK', but instead got {}".format(repr(received_msg)))
+            logger.debug("Expected to receive a text 'ACK', but instead got {}".format(repr(received_msg)))
+
+
     def handshake(self):
         # Send a `start` message through Serial
         error = None
@@ -109,7 +142,8 @@ class UARTClient:
                 if error is not None:
                     # print("ERROR:", error)
                     logger.debug(error)
-                elif received_msg == 'ACK':
+                # elif received_msg == 'ACK':
+                elif 'A' in received_msg and 'C' in received_msg and 'K' in received_msg:
                     is_ready = True
                     break
                 else:
