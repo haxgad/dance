@@ -48,7 +48,7 @@ import pandas as pd
 # clf = Classifier('../models/' + file_name + '_model.h5')
 # print(confusion_matrix(y, clf.predict(X)))
 
-dataframe = pd.read_csv("../dance_data/data_26-March/raffles_jason.txt", sep=",", header=None)
+dataframe = pd.read_csv("../dance_data/processed_data/everything.txt", sep=",", header=None)
 dataset = dataframe.values[:,0:15]
 clf = Classifier('../models/dance_data_Mar_26_model.h5')
 print(clf.predict(dataset[157:182]))

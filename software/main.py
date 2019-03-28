@@ -14,8 +14,8 @@ if __name__ != '__main__':
 #names of moves
 #doublepump, cowboy, crab, chicken, raffles, jamesbond, runningman, hunchback, mermaid, snake, neutral?, final?
 
-classes = {"doublePump": 1, "cowboy": 2, "crab": 3, "chicken": 4, "raffles": 5, "jamesBond": 6,
-           "runningMan": 7, "hunchBack": 13, "mermaid": 10, "salute": 10, "swing": 7, "logout": 18}
+classes = {"doublePump": 6, "cowboy": 2, "crab": 3, "chicken": 1, "raffles": 5, "jamesBond": 11,
+           "runningMan": 7, "hunchBack": 4, "mermaid": 9, "salute": 10, "snake": 8, "logout": 18}
 
 accumulator = ResultAccumulator(classes)
 
@@ -31,10 +31,10 @@ x_columns = ["mean_leftHandAcclX", "mean_leftHandAcclY", "mean_leftHandAcclZ",
              "mean_BodyX", "mean_BodyY", "mean_BodyZ",
              ]
 
-server_ip = #
-server_port = #
-server_aes_key = #
-processor = #
+# server_ip = #
+# server_port = #
+# server_aes_key = #
+# processor = #
 
 while True: #forever loops, find way to exit programme - neutral move? finishing move?
     # Starts a new iteration with current time printed out.
