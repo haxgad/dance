@@ -31,10 +31,10 @@ x_columns = ["mean_leftHandAcclX", "mean_leftHandAcclY", "mean_leftHandAcclZ",
              "mean_BodyX", "mean_BodyY", "mean_BodyZ",
              ]
 
-server_ip = #
-server_port = #
-server_aes_key = #
-processor = #
+# server_ip = #
+# server_port = #
+# server_aes_key = #
+# processor = #
 
 while True: #forever loops, find way to exit programme - neutral move? finishing move?
     # Starts a new iteration with current time printed out.
