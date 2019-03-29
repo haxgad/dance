@@ -7,7 +7,10 @@ float voltage = 0;
 float current = 0;       // Calculated current value
 float mCurrent = 0;
 float power = 0;
-float energy = 0;
+float cumuPower = 0;
+//float energy = 0;
+unsigned long lasttime = 0;
+unsigned long currenttime = 0;
 
 // Static Variables
 int baudRate = 9600;
@@ -180,7 +183,7 @@ unsigned sendConfig(char * buffer, unsigned char deviceCode[],double readings[])
   pkt.powerID = 9;
   pkt.voltageV = voltage * 1000;
   pkt.currentV = current * 1000;
-  pkt.powerV = power * 1000;
+  pkt.powerV = cumuPower;
   unsigned len = serialize(buffer, &pkt, sizeof(pkt));
   return len;
 }
@@ -339,7 +342,7 @@ void Task1( void *pvParameters __attribute__((unused)) )  // This is a Task.
 void Task2( void *pvParameters __attribute__((unused)) )  // This is a Task.
 {
   for (;;)
-  {
+  {  
     // read the input pin:
     // int buttonState = digitalRead(pushButton);
 
@@ -347,6 +350,16 @@ void Task2( void *pvParameters __attribute__((unused)) )  // This is a Task.
     // If the semaphore is not available, wait 5 ticks of the Scheduler to see if it becomes free.
     if ( xSemaphoreTake( xSerialSemaphore, ( TickType_t ) 5 ) == pdTRUE )
     {
+      
+      if (Serial2.available() > 0)
+      {
+        char message = Serial2.read();
+        if (message == '1')
+        {
+          Serial2.println("ACK");
+          while (Serial2.read() >=0);
+        }
+      }
       //Serial.println("Sending Data to RPi");
       // Serial2.println("Data reading");
       unsigned char deviceCode[1];
@@ -404,9 +417,19 @@ void Task3( void *pvParameters __attribute__((unused)) )  // This is a Task.
     current = sensorValue / (10 * RS);
     mCurrent = current * 1000; 
     
-    power = mCurrent * VOLTAGE_REF;
+    power = mCurrent * VOLTAGE_REF; // unit = milli watt
+    Serial.print("Instant power = ");
+    Serial.println(power);
+    unsigned int timediff = millis() - lasttime;
+    Serial.println(timediff);
+    Serial.println(double(timediff/(1000.0 *60.0*60.0 )));
+    //cumuPower = cumuPower + (power * (millis() - lasttime)/ ( 1000.0 * 60.0 * 60.0)); 
+    cumuPower = cumuPower + (power * (millis() - lasttime)/  1000000.0); // unit is joules
+    Serial.println("Cumulative Power is equals to: ");
+    Serial.println(cumuPower);
+    lasttime = millis();
 
-    energy = energy + (power / 1000);
+    //energy = energy + (power / 1000);
       xSemaphoreGive( xSerialSemaphore ); // Now free or "Give" the Serial Port for others.
     }
 
@@ -538,7 +561,7 @@ void setup() {
   xTaskCreate(
     Task1
     ,  (const portCHAR *)"ReadSensor"  // A name just for humans
-    ,  512  // This stack size can be checked & adjusted by reading the Stack Highwater
+    ,  1024  // This stack size can be checked & adjusted by reading the Stack Highwater
     ,  NULL
     ,  2  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
     ,  NULL );
@@ -546,7 +569,7 @@ void setup() {
   xTaskCreate(
     Task2
     ,  (const portCHAR *) "Send"
-    ,  512  // Stack size
+    ,  1024  // Stack size
     ,  NULL
     ,  1  // Priority
     ,  NULL );
