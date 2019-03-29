@@ -5,9 +5,12 @@ from queue import Queue
 import sys
 import logging
 import os.path
+from collections import deque, Counter
 
 from UART_client import UARTClient
 from classifier import Classifier
+from eval_server.socket_client import SocketClient
+
 
 def create_logger(name, filename='/home/pi/comms/comms.log'):
     logger = logging.getLogger(name)
@@ -28,10 +31,10 @@ def create_logger(name, filename='/home/pi/comms/comms.log'):
 
 # Initialise
 logger = create_logger('root')
-BUF_SIZE = 30
+BUF_SIZE = 10
 q = Queue()
 # clf = Classifier('/home/pi/comms/dance_data_Mar_26_model.h5')
-clf = Classifier('/home/pi/comms/test_model.sav')
+clf = Classifier('/home/pi/dance/communications/test_model.sav')
 # print(clf.predict(dataset[157:182]))
 
 
@@ -75,7 +78,7 @@ class ProducerThread(threading.Thread):
                     logger.debug(str(exc))
 
                 if data_list:
-                    buffer.append(data_list[:15])
+                    buffer.append((data_list[:15], data_list[15:]))
                     logger.info("Index: {}".format(index))
                     index += 1
                 else:
@@ -99,22 +102,67 @@ class ConsumerThread(threading.Thread):
         self.target = target
         self.name = name
         self.logger = create_logger('ML', '/home/pi/comms/ml_output.log')
-
-    def run(self):
+        
+        # Connect to eval server
+        ip_addr = "192.168.43.180"
+        port = 8889
+        self.socket_client = SocketClient(ip_addr, port)
         while 1:
             try:
-                if not q.empty():
-                    item = q.get()
-
-                    # Insert code to call the ML here
-                    # ...
-                    predicted_move = clf.predict(item)[0]
-
-                    # Send the result
-                    # As the WiFi is not working, log the output to file
-                    self.logger.info(predicted_move)
+                self.socket_client.connect()
+                break
             except Exception as exc:
-                logger.error("ML - {}".format(str(exc)))
+                print(str(exc))
+        
+        print('Server connected')
+                
+
+    def run(self):
+        queue = deque()
+        count = 0
+        prev = -1
+        action_mapping = {
+             0: 'chicken',
+             1: 'cowboy',
+             2: 'crab',
+             3: 'hunchback',
+             4: 'raffles'
+        }
+        while 1:
+            if not q.empty():
+                item = q.get()
+                data_list = [ele[0] for ele in item]
+                _, voltage, current, cumpower = item[-1][1]
+                
+                # Insert code to call the ML here
+                # ...
+                predicted_move = clf.predict(data_list)[0]
+
+                # Send the result
+                # As the WiFi is not working, log the output to file
+                self.logger.info(predicted_move)
+                
+                if predicted_move != prev:
+                    prev = predicted_move
+                    count = 1
+                    continue
+                count += 1
+                
+                if count >= 3:
+                    self.logger.info("PREDICT: {}".format(predicted_move))
+                    self.socket_client.send_data(
+                        action_mapping[int(predicted_move)],
+                        voltage / 1000,
+                        current / 1000,
+                        voltage*current / 1000000,
+                        cumpower
+                    )
+                    count = 0
+                        
+            #try:
+                        
+            #except Exception as exc:
+            #    logger.error("ML - {}".format(str(exc)))
 
 
 if __name__ == '__main__':

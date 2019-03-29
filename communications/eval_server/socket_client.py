@@ -1,7 +1,7 @@
 import socket
 from logger import create_logger
 
-from server_auth import ServerAuth
+from .server_auth import ServerAuth
 
 class SocketClient:
     def __init__(self, ip_addr, port):
@@ -24,6 +24,7 @@ class SocketClient:
         self.sock.close()
 
     def send(self, message):
+        print(message)
         encoded_msg = self.auth.encrypt_text(message, self.secret_key)
         self.sock.sendall(encoded_msg)
         self.logger.debug('Message sent')

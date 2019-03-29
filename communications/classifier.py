@@ -53,7 +53,7 @@ class Classifier:
         return np.array(X)
 
     def predict(self, input_data):
-        features = preprocessing.normalize([self.data_process(input_data[10:])])
+        features = preprocessing.normalize([self.data_process(input_data)])
         return self.model.predict(features)
 
 

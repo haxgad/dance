@@ -13,9 +13,9 @@ class ServerAuth:
         allowed_sizes = (8, 16, 32, 64, 128, 256)
         output = "{}|{}|{}|{}|".format(
                 action,
-                voltage / 10,
-                current / 10,
-                power / 10)
+                voltage,
+                current,
+                power)
 
         for size in allowed_sizes:
             if len(output) + len(str(cumpower)) <= size:
