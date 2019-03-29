@@ -102,8 +102,8 @@ def run_svm(X_train, X_test, y_train, y_test):
 # file_name = 'hard'
 # file_name = 'data'
 # file_path = '../test_data/' + file_name + '.csv'
-file_name = 'everything'
-file_path = '../dance_data/processed_data/' + file_name + '.csv'
+file_name = 'dance_data_Mar_26'
+file_path = '../dance_data/' + file_name + '.csv'
 dataframe = pd.read_csv(file_path, header=None)
 dataset = dataframe.values
 X = preprocessing.normalize(dataset[:,0:len(dataset[0])-1].astype(float))
