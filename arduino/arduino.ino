@@ -128,8 +128,8 @@ unsigned int serialize(char *buf, void *p, size_t size)
   {
      checksum ^= buf[i];
   }
-  Serial.print("Checksum is ");
-  Serial.println((int)checksum);
+  //Serial.print("Checksum is ");
+  //Serial.println((int)checksum);
   buf[size+1]=checksum;
   return size+2;
 }
@@ -145,8 +145,8 @@ unsigned int deserialize(void *p, char *buf)
   if (checksum == buf[size+1])
   {
     memcpy(p, buf+1, size);
-    Serial.print("checksum correct: ");
-    Serial.println(checksum);
+    //Serial.print("checksum correct: ");
+    //Serial.println(checksum);
     return 1;
 
   } 
@@ -418,15 +418,15 @@ void Task3( void *pvParameters __attribute__((unused)) )  // This is a Task.
     mCurrent = current * 1000; 
     
     power = mCurrent * VOLTAGE_REF; // unit = milli watt
-    Serial.print("Instant power = ");
-    Serial.println(power);
+    //Serial.print("Instant power = ");
+    //Serial.println(power);
     unsigned int timediff = millis() - lasttime;
-    Serial.println(timediff);
-    Serial.println(double(timediff/(1000.0 *60.0*60.0 )));
+    //Serial.println(timediff);
+    //Serial.println(double(timediff/(1000.0 *60.0*60.0 )));
     //cumuPower = cumuPower + (power * (millis() - lasttime)/ ( 1000.0 * 60.0 * 60.0)); 
     cumuPower = cumuPower + (power * (millis() - lasttime)/  1000000.0); // unit is joules
-    Serial.println("Cumulative Power is equals to: ");
-    Serial.println(cumuPower);
+    //Serial.println("Cumulative Power is equals to: ");
+    //Serial.println(cumuPower);
     lasttime = millis();
 
     //energy = energy + (power / 1000);
