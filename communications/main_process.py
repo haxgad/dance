@@ -32,7 +32,7 @@ def create_logger(name, filename='/home/pi/comms/comms.log'):
 # Initialise
 logger = create_logger('root')
 BUF_SIZE = 10
-q = Queue()
+# q = Queue()
 # clf = Classifier('/home/pi/comms/dance_data_Mar_26_model.h5')
 clf = Classifier('/home/pi/dance/communications/test_model.sav')
 # print(clf.predict(dataset[157:182]))
@@ -84,7 +84,6 @@ def producer(queue):
 def consumer(queue):
     # Init
     ml_logger = create_logger('ML', '/home/pi/comms/ml_output.log')
-    queue = deque()
     count = 0
     prev = -1
     action_mapping = {
@@ -145,7 +144,7 @@ if __name__ == '__main__':
     mp.set_start_method('spawn')
 
     manager = mp.Manager()
-    q = manager.Queue()
+    q = manager.Queue(2)
 
     p = mp.Process(target=producer, args=(q, ))
     c = mp.Process(target=consumer, args=(q, ))
