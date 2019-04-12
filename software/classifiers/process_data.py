@@ -24,15 +24,15 @@ def data_process(input_data):
             X.append(min(data))
         return np.array(X)
 
-
+window_size = 25
 dance_data = np.array([[0.0]*91])
 for f in listdir("../data_26-March/"):
     if ".txt" in f:
         dataframe = pd.read_csv("../data_26-March/"+f, sep=",", header=None)
         dataset = dataframe.values
         i = 0
-        while i+25 <= len(dataset): 
-            X = dataset[i:i+25,0:15]
+        while i+window_size <= len(dataset): 
+            X = dataset[i:i+window_size,0:15]
             X = data_process(X)
             if "chicken" in f:
                 X = np.append(X, 0)
@@ -44,6 +44,18 @@ for f in listdir("../data_26-March/"):
                 X = np.append(X, 3)
             if "raffles" in f:
                 X = np.append(X, 4)
+            if "running" in f:
+                X = np.append(X, 5)
+            if "james" in f:
+                X = np.append(X, 6)
+            if "snake" in f:
+                X = np.append(X, 7)
+            if "double" in f:
+                X = np.append(X, 8)
+            if "mermaid" in f:
+                X = np.append(X, 9)
+            if "end" in f:
+                X = np.append(X, 10)
             dance_data = np.append(dance_data, [X], axis=0)
             i += 1
             print(len(dance_data))
