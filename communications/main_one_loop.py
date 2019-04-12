@@ -162,6 +162,8 @@ if __name__ == '__main__':
     clf = Classifier('/home/pi/dance/communications/test_model.sav')
     client = UARTClient('/dev/ttyAMA0')
     buffer = []
+    predict_data = []
+    power_data = []
     index = 0
 
     # Get filename to output data
@@ -216,7 +218,9 @@ if __name__ == '__main__':
                 writer_obj.writerow(data_list)
 
             if data_list:
-                buffer.append((data_list[:15], data_list[15:]))
+                # buffer.append((data_list[:15], data_list[15:]))
+                power_data = data_list[15:]
+                buffer.append(data_list[:15])
                 logger.info("Index: {}".format(index))
                 index += 1
             else:
@@ -224,13 +228,13 @@ if __name__ == '__main__':
 
             # Send the 20-row package to ML model
             if len(buffer) >= BUF_SIZE:
-                item = buffer
-                data_list = [ele[0] for ele in item]
-                _, voltage, current, cumpower = item[-1][1]
+                # item = buffer
+                # data_list = [ele[0] for ele in item]
+                _, voltage, current, cumpower = power_data
 
                 # Insert code to call the ML here
                 # ...
-                predicted_move = clf.predict(data_list)[0]
+                predicted_move = clf.predict(buffer)[0]
 
                 # Send the result
                 # As the WiFi is not working, log the output to file
@@ -254,6 +258,6 @@ if __name__ == '__main__':
                     count = 0
 
                 # Clear the buffer for new data
-                buffer = []
+                buffer.clear()
         except Exception as exc:
             logger.error("Comms - {}".format(str(exc)))
