@@ -28,7 +28,7 @@ if __name__ == "__main__":
 
     logger = create_logger('writer')
     client = UARTClient(serial_port)
-    client.handshake()
+    # client.handshake()
 
 
     # Get filename

@@ -6,7 +6,7 @@ if __name__ == "__main__":
     # serial_port = '/dev/ttyS0'
 
     client = UARTClient(serial_port)
-    client.handshake()
+    # client.handshake()
 
     # Infinite loop
     index = 0

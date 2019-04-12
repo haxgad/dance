@@ -48,7 +48,7 @@ class ProducerThread(threading.Thread):
 
         # Initialize connection to Arduino
         self.client = UARTClient('/dev/ttyAMA0')
-        self.client.handshake()
+        # self.client.handshake()
 
     def run(self):
         buffer = []
@@ -105,6 +105,7 @@ class ConsumerThread(threading.Thread):
         
         # Connect to eval server
         ip_addr = "192.168.43.180"
+        #ip_addr = "192.168.43.51"
         port = 8889
         self.socket_client = SocketClient(ip_addr, port)
         while 1:
