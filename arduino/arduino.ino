@@ -29,7 +29,8 @@ const int VOLTAGE_REF = 5;  // Reference voltage for analog read
     #include "Wire.h"
 #endif
 
-MPU6050 mpu;
+//MPU6050 mpu;
+MPU6050 mpu[5];
 
 #define SENSOR0_AD0 12
 #define SENSOR1_AD0 11
@@ -62,13 +63,13 @@ const int offset2[6] = {1960, -204, 1074, 203, -144, 25};
 const int offset3[6] = {-3742, 746, 1984, 80, -25, 83};
 const int offset4[6] = {983, -2752, 1027, 273, -40, -159};
 
-void SetOffsets(int TheOffsets[6])
-  { mpu.setXAccelOffset(TheOffsets [0]);
-    mpu.setYAccelOffset(TheOffsets [1]);
-    mpu.setZAccelOffset(TheOffsets [2]);
-    mpu.setXGyroOffset (TheOffsets [3]);
-    mpu.setYGyroOffset (TheOffsets [4]);
-    mpu.setZGyroOffset (TheOffsets [5]);
+void SetOffsets(int mpuNum, int TheOffsets[6])
+  { mpu[mpuNum].setXAccelOffset(TheOffsets [0]);
+    mpu[mpuNum].setYAccelOffset(TheOffsets [1]);
+    mpu[mpuNum].setZAccelOffset(TheOffsets [2]);
+    mpu[mpuNum].setXGyroOffset (TheOffsets [3]);
+    mpu[mpuNum].setYGyroOffset (TheOffsets [4]);
+    mpu[mpuNum].setZGyroOffset (TheOffsets [5]);
   } // SetOffsets
 
 
@@ -226,7 +227,7 @@ void Task1( void *pvParameters __attribute__((unused)) )  // This is a Task.
       while (!mpuInterrupt && fifoCount < packetSize) {
           if (mpuInterrupt && fifoCount < packetSize) {
             // try to get out of the infinite loop 
-            fifoCount = mpu.getFIFOCount();
+            fifoCount = mpu[activeSensor].getFIFOCount();
           }  
           // other program behavior stuff here
           // .
@@ -250,7 +251,6 @@ void Task1( void *pvParameters __attribute__((unused)) )  // This is a Task.
           digitalWrite(SENSOR2_AD0, HIGH);
           digitalWrite(SENSOR3_AD0, HIGH);
           digitalWrite(SENSOR4_AD0, HIGH);
-          SetOffsets(offset0);
           break;
         case 1:
           digitalWrite(SENSOR1_AD0, LOW);
@@ -258,7 +258,6 @@ void Task1( void *pvParameters __attribute__((unused)) )  // This is a Task.
           digitalWrite(SENSOR2_AD0, HIGH);
           digitalWrite(SENSOR3_AD0, HIGH);
           digitalWrite(SENSOR4_AD0, HIGH);
-          SetOffsets(offset1);
           break;
         case 2:
           digitalWrite(SENSOR2_AD0, LOW);
@@ -266,7 +265,6 @@ void Task1( void *pvParameters __attribute__((unused)) )  // This is a Task.
           digitalWrite(SENSOR1_AD0, HIGH);
           digitalWrite(SENSOR3_AD0, HIGH);
           digitalWrite(SENSOR4_AD0, HIGH);
-          SetOffsets(offset2);
           break;
         case 3:
           digitalWrite(SENSOR3_AD0, LOW);
@@ -274,7 +272,6 @@ void Task1( void *pvParameters __attribute__((unused)) )  // This is a Task.
           digitalWrite(SENSOR1_AD0, HIGH);
           digitalWrite(SENSOR2_AD0, HIGH);
           digitalWrite(SENSOR4_AD0, HIGH);
-          SetOffsets(offset3);
           break;
         case 4:
           digitalWrite(SENSOR4_AD0, LOW);
@@ -282,30 +279,29 @@ void Task1( void *pvParameters __attribute__((unused)) )  // This is a Task.
           digitalWrite(SENSOR1_AD0, HIGH);
           digitalWrite(SENSOR2_AD0, HIGH);
           digitalWrite(SENSOR3_AD0, HIGH);
-          SetOffsets(offset4);
           break;
       }
     
-      mpuIntStatus = mpu.getIntStatus();
+      mpuIntStatus = mpu[activeSensor].getIntStatus();
 
       // get current FIFO count
-      fifoCount = mpu.getFIFOCount();
+      fifoCount = mpu[activeSensor].getFIFOCount();
     
       // check for overflow (this should never happen unless our code is too inefficient)
       if ((mpuIntStatus & _BV(MPU6050_INTERRUPT_FIFO_OFLOW_BIT)) || fifoCount >= 1024) {
           // reset so we can continue cleanly
-          mpu.resetFIFO();
-          fifoCount = mpu.getFIFOCount();
+          mpu[activeSensor].resetFIFO();
+          fifoCount = mpu[activeSensor].getFIFOCount();
           //Serial.println(F("FIFO overflow!"));
     
       // otherwise, check for DMP data ready interrupt (this should happen frequently)
       } //else if (mpuIntStatus & _BV(MPU6050_INTERRUPT_DMP_INT_BIT)) {
         if (mpuIntStatus & _BV(MPU6050_INTERRUPT_DMP_INT_BIT)) {
             // wait for correct available data length, should be a VERY short wait
-            while (fifoCount < packetSize) fifoCount = mpu.getFIFOCount();
+            while (fifoCount < packetSize) fifoCount = mpu[activeSensor].getFIFOCount();
       
             // read a packet from FIFO
-            mpu.getFIFOBytes(fifoBuffer, packetSize);
+            mpu[activeSensor].getFIFOBytes(fifoBuffer, packetSize);
             
             // track FIFO count here in case there is > 1 packet available
             // (this lets us immediately read more without waiting for an interrupt)
@@ -313,11 +309,11 @@ void Task1( void *pvParameters __attribute__((unused)) )  // This is a Task.
       
             // display initial world-frame acceleration, adjusted to remove gravity
             // and rotated based on known orientation from quaternion
-            mpu.dmpGetQuaternion(&q, fifoBuffer);
-            mpu.dmpGetAccel(&aa, fifoBuffer);
-            mpu.dmpGetGravity(&gravity, &q);
-            mpu.dmpGetLinearAccel(&aaReal, &aa, &gravity);
-            mpu.dmpGetLinearAccelInWorld(&aaWorld, &aaReal, &q);
+            mpu[activeSensor].dmpGetQuaternion(&q, fifoBuffer);
+            mpu[activeSensor].dmpGetAccel(&aa, fifoBuffer);
+            mpu[activeSensor].dmpGetGravity(&gravity, &q);
+            mpu[activeSensor].dmpGetLinearAccel(&aaReal, &aa, &gravity);
+            mpu[activeSensor].dmpGetLinearAccelInWorld(&aaWorld, &aaReal, &q);
             //Serial.print("aworld\t");
             double x = (double) aaWorld.x / 8192.0;
             //Serial.print(x, 5);
@@ -387,7 +383,7 @@ void Task2( void *pvParameters __attribute__((unused)) )  // This is a Task.
 //      Serial.print(results.powerV);
 //      Serial.println();
       //Serial.println("Done");
-
+      
       xSemaphoreGive( xSerialSemaphore ); // Now free or "Give" the Serial Port for others.
     }
 
@@ -470,7 +466,7 @@ for(activeSensor=0; activeSensor<5; activeSensor++) {
           digitalWrite(SENSOR2_AD0, HIGH);
           digitalWrite(SENSOR3_AD0, HIGH);
           digitalWrite(SENSOR4_AD0, HIGH);
-          //SetOffsets(offset0);
+          SetOffsets(activeSensor, offset0);
           break;
         case 1:
           digitalWrite(SENSOR1_AD0, LOW);
@@ -478,7 +474,7 @@ for(activeSensor=0; activeSensor<5; activeSensor++) {
           digitalWrite(SENSOR2_AD0, HIGH);
           digitalWrite(SENSOR3_AD0, HIGH);
           digitalWrite(SENSOR4_AD0, HIGH);
-          //SetOffsets(offset1);
+          SetOffsets(activeSensor, offset1);
           break;
         case 2:
           digitalWrite(SENSOR2_AD0, LOW);
@@ -486,7 +482,7 @@ for(activeSensor=0; activeSensor<5; activeSensor++) {
           digitalWrite(SENSOR1_AD0, HIGH);
           digitalWrite(SENSOR3_AD0, HIGH);
           digitalWrite(SENSOR4_AD0, HIGH);
-          //SetOffsets(offset2);
+          SetOffsets(activeSensor, offset2);
           break;
         case 3:
           digitalWrite(SENSOR3_AD0, LOW);
@@ -494,7 +490,7 @@ for(activeSensor=0; activeSensor<5; activeSensor++) {
           digitalWrite(SENSOR1_AD0, HIGH);
           digitalWrite(SENSOR2_AD0, HIGH);
           digitalWrite(SENSOR4_AD0, HIGH);
-          //SetOffsets(offset3);
+          SetOffsets(activeSensor, offset3);
           break;
         case 4:
           digitalWrite(SENSOR4_AD0, LOW);
@@ -502,17 +498,18 @@ for(activeSensor=0; activeSensor<5; activeSensor++) {
           digitalWrite(SENSOR1_AD0, HIGH);
           digitalWrite(SENSOR2_AD0, HIGH);
           digitalWrite(SENSOR3_AD0, HIGH);
-          //SetOffsets(offset4);
+          SetOffsets(activeSensor, offset4);
           break;
       }
 
     // initialize device
-    Serial.println(F("Initializing I2C devices..."));
-    mpu.initialize();
+    Serial.print(F("Initializing I2C devices... Sensor "));
+    Serial.println(activeSensor);
+    mpu[activeSensor].initialize();
     
     // verify connection
     Serial.println(F("Testing device connections..."));
-    Serial.println(mpu.testConnection() ? F("MPU6050 connection successful") : F("MPU6050 connection failed"));
+    Serial.println(mpu[activeSensor].testConnection() ? F("MPU6050 connection successful") : F("MPU6050 connection failed"));
 
     // wait for ready
     //Serial.println(F("\nSend any character to begin DMP programming and demo: "));
@@ -522,26 +519,26 @@ for(activeSensor=0; activeSensor<5; activeSensor++) {
 
     // load and configure the DMP
     Serial.println(F("Initializing DMP..."));
-    devStatus = mpu.dmpInitialize();
+    devStatus = mpu[activeSensor].dmpInitialize();
     
     // make sure it worked (returns 0 if so)
     if (devStatus == 0) {
         // turn on the DMP, now that it's ready
         Serial.println(F("Enabling DMP..."));
-        mpu.setDMPEnabled(true);
+        mpu[activeSensor].setDMPEnabled(true);
 
         // enable Arduino interrupt detection
         Serial.println(F("Enabling interrupt detection ..."));
         //Timer1.initialize(100000);         // initialize timer1, and set a 0.1 second period
         //Timer1.attachInterrupt(dmpDataReady);  // attaches dmpDataReady() as a timer overflow interrupt
-        mpuIntStatus = mpu.getIntStatus();
+        mpuIntStatus = mpu[activeSensor].getIntStatus();
 
         // set our DMP Ready flag so the main loop() function knows it's okay to use it
         Serial.println(F("DMP ready! Waiting for first interrupt..."));
         dmpReady = true;
 
         // get expected DMP packet size for later comparison
-        packetSize = mpu.dmpGetFIFOPacketSize();
+        packetSize = mpu[activeSensor].dmpGetFIFOPacketSize();
     } else {
         // ERROR!
         // 1 = initial memory load failed
@@ -638,4 +635,5 @@ for(activeSensor=0; activeSensor<5; activeSensor++) {
 // ===                    MAIN PROGRAM LOOP                     ===
 // ================================================================
 
-void loop() {}
+void loop() {
+}
