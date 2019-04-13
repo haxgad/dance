@@ -13,7 +13,7 @@ unsigned long lasttime = 0;
 unsigned long currenttime = 0;
 
 // Static Variables
-int baudRate = 9600;
+int baudRate = 19200;
 const int SENSOR_PIN = A0;  // Input pin for measuring Vout
 const int SENSOR_PIN1 = A1;  // Input pin for measuring divided voltage
 const float RS = 0.1;          // Shunt resistor value (in ohms)
@@ -336,7 +336,7 @@ void Task1( void *pvParameters __attribute__((unused)) )  // This is a Task.
       xSemaphoreGive( xSerialSemaphore ); // Now free or "Give" the Serial Port for others.
     }
 
-    vTaskDelay(4);  // one tick delay (15ms) in between reads for stability
+    vTaskDelay(1);  // one tick delay (15ms) in between reads for stability
   }
 }
 void Task2( void *pvParameters __attribute__((unused)) )  // This is a Task.
@@ -365,12 +365,12 @@ void Task2( void *pvParameters __attribute__((unused)) )  // This is a Task.
       unsigned char deviceCode[1];
       //double readings[1];
       char buffer[64];
-//      Serial.print("Sensor readings are: ");
-//      for(int i=0; i<14; i++) {
-//              Serial.print(sensorReadings[i], 5);
-//              Serial.print("\t");
-//          }
-//          Serial.println(sensorReadings[14], 5);
+      Serial.print("Sensor readings are: ");
+      for(int i=0; i<14; i++) {
+              Serial.print(sensorReadings[i], 5);
+              Serial.print("\t");
+          }
+          Serial.println(sensorReadings[14], 5);
       unsigned len = sendConfig(buffer,deviceCode,sensorReadings);
       DataPacket results; 
       deserialize(&results, buffer);
@@ -391,7 +391,7 @@ void Task2( void *pvParameters __attribute__((unused)) )  // This is a Task.
       xSemaphoreGive( xSerialSemaphore ); // Now free or "Give" the Serial Port for others.
     }
 
-    vTaskDelay(4);  // one tick delay (15ms) in between reads for stability
+    vTaskDelay(1);  // one tick delay (15ms) in between reads for stability
   }
 }
 void Task3( void *pvParameters __attribute__((unused)) )  // This is a Task.
@@ -456,6 +456,56 @@ void setup() {
     Serial.begin(baudRate);
     while (!Serial); // wait for Leonardo enumeration, others continue immediately
 
+    pinMode(SENSOR0_AD0, OUTPUT);
+    pinMode(SENSOR1_AD0, OUTPUT);
+    pinMode(SENSOR2_AD0, OUTPUT);
+    pinMode(SENSOR3_AD0, OUTPUT);
+    pinMode(SENSOR4_AD0, OUTPUT);
+
+for(activeSensor=0; activeSensor<5; activeSensor++) {
+      switch (activeSensor) {
+        case 0:
+          digitalWrite(SENSOR0_AD0, LOW);
+          digitalWrite(SENSOR1_AD0, HIGH);
+          digitalWrite(SENSOR2_AD0, HIGH);
+          digitalWrite(SENSOR3_AD0, HIGH);
+          digitalWrite(SENSOR4_AD0, HIGH);
+          //SetOffsets(offset0);
+          break;
+        case 1:
+          digitalWrite(SENSOR1_AD0, LOW);
+          digitalWrite(SENSOR0_AD0, HIGH);
+          digitalWrite(SENSOR2_AD0, HIGH);
+          digitalWrite(SENSOR3_AD0, HIGH);
+          digitalWrite(SENSOR4_AD0, HIGH);
+          //SetOffsets(offset1);
+          break;
+        case 2:
+          digitalWrite(SENSOR2_AD0, LOW);
+          digitalWrite(SENSOR0_AD0, HIGH);
+          digitalWrite(SENSOR1_AD0, HIGH);
+          digitalWrite(SENSOR3_AD0, HIGH);
+          digitalWrite(SENSOR4_AD0, HIGH);
+          //SetOffsets(offset2);
+          break;
+        case 3:
+          digitalWrite(SENSOR3_AD0, LOW);
+          digitalWrite(SENSOR0_AD0, HIGH);
+          digitalWrite(SENSOR1_AD0, HIGH);
+          digitalWrite(SENSOR2_AD0, HIGH);
+          digitalWrite(SENSOR4_AD0, HIGH);
+          //SetOffsets(offset3);
+          break;
+        case 4:
+          digitalWrite(SENSOR4_AD0, LOW);
+          digitalWrite(SENSOR0_AD0, HIGH);
+          digitalWrite(SENSOR1_AD0, HIGH);
+          digitalWrite(SENSOR2_AD0, HIGH);
+          digitalWrite(SENSOR3_AD0, HIGH);
+          //SetOffsets(offset4);
+          break;
+      }
+
     // initialize device
     Serial.println(F("Initializing I2C devices..."));
     mpu.initialize();
@@ -500,13 +550,10 @@ void setup() {
         Serial.print(F("DMP Initialization failed (code "));
         Serial.print(devStatus);
         Serial.println(F(")"));
+        for(;;);
     }
     
-    pinMode(SENSOR0_AD0, OUTPUT);
-    pinMode(SENSOR1_AD0, OUTPUT);
-    pinMode(SENSOR2_AD0, OUTPUT);
-    pinMode(SENSOR3_AD0, OUTPUT);
-    pinMode(SENSOR4_AD0, OUTPUT);
+      }
 
     Serial2.begin(baudRate);
 
@@ -526,7 +573,7 @@ void setup() {
   }
 
   // Handshake
-  int isReady = 0;
+  int isReady = 1;
 
   while (isReady == 0)
   {
@@ -591,5 +638,4 @@ void setup() {
 // ===                    MAIN PROGRAM LOOP                     ===
 // ================================================================
 
-void loop() {
-}
+void loop() {}
