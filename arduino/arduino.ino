@@ -32,7 +32,7 @@ const int VOLTAGE_REF = 5;  // Reference voltage for analog read
 //MPU6050 mpu;
 MPU6050 mpu[5];
 
-#define SENSOR0_AD0 12
+#define SENSOR0_AD0 13
 #define SENSOR1_AD0 11
 #define SENSOR2_AD0 10
 #define SENSOR3_AD0 9
@@ -46,7 +46,8 @@ double sensorReadings[15];
 bool dmpReady = false;  // set true if DMP init was successful
 uint8_t mpuIntStatus;   // holds actual interrupt status byte from MPU
 uint8_t devStatus;      // return status after each device operation (0 = success, !0 = error)
-uint16_t packetSize;    // expected DMP packet size (default is 42 bytes)
+//uint16_t packetSize;    // expected DMP packet size (default is 42 bytes)
+uint16_t packetSizes[5];    // expected DMP packet size (default is 42 bytes)
 uint16_t fifoCount;     // count of all bytes currently in FIFO
 uint8_t fifoBuffer[64]; // FIFO storage buffer
 
@@ -218,11 +219,11 @@ void Task1( void *pvParameters __attribute__((unused)) )  // This is a Task.
     if ( xSemaphoreTake( xSerialSemaphore, ( TickType_t ) 5 ) == pdTRUE )
     {
       //Serial.println("Obtaining readings from sensors");
-      mpuInterrupt = true;
+      //mpuInterrupt = true;
       
       // if programming failed, don't try to do anything
       if (!dmpReady) return;
-    
+    /*
       // wait for MPU interrupt or extra packet(s) available
       while (!mpuInterrupt && fifoCount < packetSize) {
           if (mpuInterrupt && fifoCount < packetSize) {
@@ -242,8 +243,8 @@ void Task1( void *pvParameters __attribute__((unused)) )  // This is a Task.
       }
     
       // reset interrupt flag and get INT_STATUS byte
-      mpuInterrupt = false;
-      for(activeSensor=0; activeSensor<5; activeSensor++) {
+      mpuInterrupt = false;*/
+      for(activeSensor=1; activeSensor<2; activeSensor++) {
       switch (activeSensor) {
         case 0:
           digitalWrite(SENSOR0_AD0, LOW);
@@ -292,20 +293,20 @@ void Task1( void *pvParameters __attribute__((unused)) )  // This is a Task.
           // reset so we can continue cleanly
           mpu[activeSensor].resetFIFO();
           fifoCount = mpu[activeSensor].getFIFOCount();
-          //Serial.println(F("FIFO overflow!"));
+          Serial.println(F("FIFO overflow!"));
     
       // otherwise, check for DMP data ready interrupt (this should happen frequently)
-      } //else if (mpuIntStatus & _BV(MPU6050_INTERRUPT_DMP_INT_BIT)) {
-        if (mpuIntStatus & _BV(MPU6050_INTERRUPT_DMP_INT_BIT)) {
+      } else if (mpuIntStatus & _BV(MPU6050_INTERRUPT_DMP_INT_BIT)) {
+        //if (mpuIntStatus & _BV(MPU6050_INTERRUPT_DMP_INT_BIT)) {
             // wait for correct available data length, should be a VERY short wait
-            while (fifoCount < packetSize) fifoCount = mpu[activeSensor].getFIFOCount();
+            while (fifoCount < packetSizes[activeSensor]) fifoCount = mpu[activeSensor].getFIFOCount();
       
             // read a packet from FIFO
-            mpu[activeSensor].getFIFOBytes(fifoBuffer, packetSize);
+            mpu[activeSensor].getFIFOBytes(fifoBuffer, packetSizes[activeSensor]);
             
             // track FIFO count here in case there is > 1 packet available
             // (this lets us immediately read more without waiting for an interrupt)
-            fifoCount -= packetSize;
+            fifoCount -= packetSizes[activeSensor];
       
             // display initial world-frame acceleration, adjusted to remove gravity
             // and rotated based on known orientation from quaternion
@@ -451,14 +452,15 @@ void setup() {
 
     Serial.begin(baudRate);
     while (!Serial); // wait for Leonardo enumeration, others continue immediately
-
+    Serial.println("I'M ALIVE!");
     pinMode(SENSOR0_AD0, OUTPUT);
     pinMode(SENSOR1_AD0, OUTPUT);
     pinMode(SENSOR2_AD0, OUTPUT);
     pinMode(SENSOR3_AD0, OUTPUT);
     pinMode(SENSOR4_AD0, OUTPUT);
 
-for(activeSensor=0; activeSensor<5; activeSensor++) {
+for(activeSensor=0; activeSensor<4; activeSensor++) {
+    Serial.print("BEFORE SWITCH");
       switch (activeSensor) {
         case 0:
           digitalWrite(SENSOR0_AD0, LOW);
@@ -466,7 +468,7 @@ for(activeSensor=0; activeSensor<5; activeSensor++) {
           digitalWrite(SENSOR2_AD0, HIGH);
           digitalWrite(SENSOR3_AD0, HIGH);
           digitalWrite(SENSOR4_AD0, HIGH);
-          SetOffsets(activeSensor, offset0);
+          //SetOffsets(activeSensor, offset0);
           break;
         case 1:
           digitalWrite(SENSOR1_AD0, LOW);
@@ -474,7 +476,7 @@ for(activeSensor=0; activeSensor<5; activeSensor++) {
           digitalWrite(SENSOR2_AD0, HIGH);
           digitalWrite(SENSOR3_AD0, HIGH);
           digitalWrite(SENSOR4_AD0, HIGH);
-          SetOffsets(activeSensor, offset1);
+          //SetOffsets(activeSensor, offset1);
           break;
         case 2:
           digitalWrite(SENSOR2_AD0, LOW);
@@ -482,7 +484,7 @@ for(activeSensor=0; activeSensor<5; activeSensor++) {
           digitalWrite(SENSOR1_AD0, HIGH);
           digitalWrite(SENSOR3_AD0, HIGH);
           digitalWrite(SENSOR4_AD0, HIGH);
-          SetOffsets(activeSensor, offset2);
+          //SetOffsets(activeSensor, offset2);
           break;
         case 3:
           digitalWrite(SENSOR3_AD0, LOW);
@@ -490,7 +492,7 @@ for(activeSensor=0; activeSensor<5; activeSensor++) {
           digitalWrite(SENSOR1_AD0, HIGH);
           digitalWrite(SENSOR2_AD0, HIGH);
           digitalWrite(SENSOR4_AD0, HIGH);
-          SetOffsets(activeSensor, offset3);
+          //SetOffsets(activeSensor, offset3);
           break;
         case 4:
           digitalWrite(SENSOR4_AD0, LOW);
@@ -498,7 +500,7 @@ for(activeSensor=0; activeSensor<5; activeSensor++) {
           digitalWrite(SENSOR1_AD0, HIGH);
           digitalWrite(SENSOR2_AD0, HIGH);
           digitalWrite(SENSOR3_AD0, HIGH);
-          SetOffsets(activeSensor, offset4);
+          //SetOffsets(activeSensor, offset4);
           break;
       }
 
@@ -538,7 +540,26 @@ for(activeSensor=0; activeSensor<5; activeSensor++) {
         dmpReady = true;
 
         // get expected DMP packet size for later comparison
-        packetSize = mpu[activeSensor].dmpGetFIFOPacketSize();
+        packetSizes[activeSensor] = mpu[activeSensor].dmpGetFIFOPacketSize();
+
+        switch (activeSensor) {
+          case 0:
+            SetOffsets(activeSensor, offset0);
+            break;
+          case 1:
+            SetOffsets(activeSensor, offset1);
+            break;
+          case 2:
+            SetOffsets(activeSensor, offset2);
+            break;
+          case 3:
+            SetOffsets(activeSensor, offset3);
+            break;
+          case 4:
+            SetOffsets(activeSensor, offset4);
+            break;
+      }
+        
     } else {
         // ERROR!
         // 1 = initial memory load failed
@@ -547,7 +568,7 @@ for(activeSensor=0; activeSensor<5; activeSensor++) {
         Serial.print(F("DMP Initialization failed (code "));
         Serial.print(devStatus);
         Serial.println(F(")"));
-        for(;;);
+        if(activeSensor == 4) {for(;;);}
     }
     
       }
@@ -570,7 +591,7 @@ for(activeSensor=0; activeSensor<5; activeSensor++) {
   }
 
   // Handshake
-  int isReady = 1;
+  int isReady = 0;
 
   while (isReady == 0)
   {
@@ -600,7 +621,6 @@ for(activeSensor=0; activeSensor<5; activeSensor++) {
     }
   }
 
-
   // Now set up two Tasks to run independently.
   xTaskCreate(
     Task1
@@ -625,7 +645,6 @@ for(activeSensor=0; activeSensor<5; activeSensor++) {
     ,  NULL
     ,  0  // Priority
     ,  NULL );
-
 
   // Now the Task scheduler, which takes over control of scheduling individual Tasks, is automatically started.
 }
