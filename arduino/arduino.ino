@@ -438,8 +438,6 @@ void setup() {
     
             // enable Arduino interrupt detection
             Serial.println(F("Enabling interrupt detection ..."));
-            //Timer1.initialize(100000);         // initialize timer1, and set a 0.1 second period
-            //Timer1.attachInterrupt(dmpDataReady);  // attaches dmpDataReady() as a timer overflow interrupt
             mpuIntStatus = mpu[activeSensor].getIntStatus();
     
             // set our DMP Ready flag so the main loop() function knows it's okay to use it
