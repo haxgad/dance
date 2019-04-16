@@ -24,41 +24,44 @@ def data_process(input_data):
             X.append(min(data))
         return np.array(X)
 
-window_size = 25
+window_size = 50
 dance_data = np.array([[0.0]*91])
-for f in listdir("../data_26-March/"):
+for f in listdir("../final_data/"):
     if ".txt" in f:
-        dataframe = pd.read_csv("../data_26-March/"+f, sep=",", header=None)
+        dataframe = pd.read_csv("../final_data/"+f, sep=",", header=None)
         dataset = dataframe.values
+        print(f)
         i = 0
         while i+window_size <= len(dataset): 
             X = dataset[i:i+window_size,0:15]
             X = data_process(X)
             if "chicken" in f:
                 X = np.append(X, 0)
-            if "cowboy" in f:
+            if "cowboy_front" in f:
                 X = np.append(X, 1)
-            if "crab" in f:
+            if "cowboy_back" in f:
                 X = np.append(X, 2)
-            if "hunchback" in f:
+            if "crab" in f:
                 X = np.append(X, 3)
-            if "raffles_left" in f:
+            if "hunchback" in f:
                 X = np.append(X, 4)
-            if "raffles_right" in f:
+            if "raffles_left" in f:
                 X = np.append(X, 5)
-            if "running" in f:
+            if "raffles_right" in f:
                 X = np.append(X, 6)
-            if "james" in f:
+            if "running" in f:
                 X = np.append(X, 7)
-            if "snake" in f:
+            if "james" in f:
                 X = np.append(X, 8)
-            if "double" in f:
+            if "snake" in f:
                 X = np.append(X, 9)
-            if "mermaid" in f:
+            if "double" in f:
                 X = np.append(X, 10)
-            if "end" in f:
+            if "mermaid" in f:
                 X = np.append(X, 11)
+            if "final" in f:
+                X = np.append(X, 12)
             dance_data = np.append(dance_data, [X], axis=0)
-            i += 1
-            print(len(dance_data))
-np.savetxt("../processed_data_window25.csv", dance_data, delimiter=",")
+            i += 10
+dance_data = dance_data[1:]
+np.savetxt("../final_data/processed_data/window50.csv", dance_data, delimiter=",")

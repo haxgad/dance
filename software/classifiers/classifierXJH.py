@@ -25,21 +25,21 @@ def build_nn_model(num_feature, num_class):
     return model
 
 def run_ann(X_train, X_test, y_train, y_test, model_name): 
-    if(os.path.isfile('../models/' + model_name + '.h5')):
-        model = load_model('../models/' + model_name + '.h5')
+    if(os.path.isfile('../final_models/' + model_name + '.h5')):
+        model = load_model('../final_models/' + model_name + '.h5')
     else:
         num_feature = len(X_train[0])
         num_class = max(np.amax(y_train).astype(int), np.amax(y_test).astype(int))+1
         model = build_nn_model(num_feature, num_class)
         model.fit(X_train, y_train, epochs=200, batch_size=10, verbose=1)
 
-    model.save('../models/' + model_name + '.h5')
+    model.save('../final_models/' + model_name + '.h5')
     prediction = model.predict_classes(X_test, verbose=0)
     accuracy = model.evaluate(X_test, y_test, verbose=0)[1]
     return prediction, accuracy
 
 def k_fold_cross_validate(X, y, model_name):
-    model = load_model('../models/' + model_name + '.h5')
+    model = load_model('../final_models/' + model_name + '.h5')
     
     seed = 7
     np.random.seed(seed)
@@ -102,8 +102,8 @@ def run_svm(X_train, X_test, y_train, y_test):
 # file_name = 'hard'
 # file_name = 'data'
 # file_path = '../test_data/' + file_name + '.csv'
-file_name = 'dance_data_Mar_26'
-file_path = '../dance_data/' + file_name + '.csv'
+file_name = 'window50'
+file_path = '../final_data/processed_data/' + file_name + '.csv'
 dataframe = pd.read_csv(file_path, header=None)
 dataset = dataframe.values
 X = preprocessing.normalize(dataset[:,0:len(dataset[0])-1].astype(float))
