@@ -1,0 +1,366 @@
+2019-04-12 10:19:03,676 - ML - INFO - Loading model from /home/pi/dance/communications/test_model.sav
+2019-04-12 10:19:04,021 - ML - INFO - Successfully loaded the model: MLPClassifier(activation='relu', alpha=1e-05, batch_size=10, beta_1=0.9,
+       beta_2=0.999, early_stopping=False, epsilon=1e-08,
+       hidden_layer_sizes=(64, 32, 16, 8), learning_rate='constant',
+       learning_rate_init=0.001, max_iter=200, momentum=0.9,
+       n_iter_no_change=10, nesterovs_momentum=True, power_t=0.5,
+       random_state=1, shuffle=True, solver='sgd', tol=0.0001,
+       validation_fraction=0.1, verbose=False, warm_start=False)
+2019-04-12 10:19:06,391 - ML - INFO - Loading model from /home/pi/dance/communications/test_model.sav
+2019-04-12 10:19:06,495 - ML - INFO - Successfully loaded the model: MLPClassifier(activation='relu', alpha=1e-05, batch_size=10, beta_1=0.9,
+       beta_2=0.999, early_stopping=False, epsilon=1e-08,
+       hidden_layer_sizes=(64, 32, 16, 8), learning_rate='constant',
+       learning_rate_init=0.001, max_iter=200, momentum=0.9,
+       n_iter_no_change=10, nesterovs_momentum=True, power_t=0.5,
+       random_state=1, shuffle=True, solver='sgd', tol=0.0001,
+       validation_fraction=0.1, verbose=False, warm_start=False)
+2019-04-12 10:19:09,174 - ML - INFO - Loading model from /home/pi/dance/communications/test_model.sav
+2019-04-12 10:19:09,174 - ML - INFO - Loading model from /home/pi/dance/communications/test_model.sav
+2019-04-12 10:19:09,290 - ML - INFO - Successfully loaded the model: MLPClassifier(activation='relu', alpha=1e-05, batch_size=10, beta_1=0.9,
+       beta_2=0.999, early_stopping=False, epsilon=1e-08,
+       hidden_layer_sizes=(64, 32, 16, 8), learning_rate='constant',
+       learning_rate_init=0.001, max_iter=200, momentum=0.9,
+       n_iter_no_change=10, nesterovs_momentum=True, power_t=0.5,
+       random_state=1, shuffle=True, solver='sgd', tol=0.0001,
+       validation_fraction=0.1, verbose=False, warm_start=False)
+2019-04-12 10:19:09,290 - ML - INFO - Successfully loaded the model: MLPClassifier(activation='relu', alpha=1e-05, batch_size=10, beta_1=0.9,
+       beta_2=0.999, early_stopping=False, epsilon=1e-08,
+       hidden_layer_sizes=(64, 32, 16, 8), learning_rate='constant',
+       learning_rate_init=0.001, max_iter=200, momentum=0.9,
+       n_iter_no_change=10, nesterovs_momentum=True, power_t=0.5,
+       random_state=1, shuffle=True, solver='sgd', tol=0.0001,
+       validation_fraction=0.1, verbose=False, warm_start=False)
+2019-04-12 10:22:54,184 - ML - INFO - Loading model from /home/pi/dance/communications/test_model.sav
+2019-04-12 10:22:54,298 - ML - INFO - Successfully loaded the model: MLPClassifier(activation='relu', alpha=1e-05, batch_size=10, beta_1=0.9,
+       beta_2=0.999, early_stopping=False, epsilon=1e-08,
+       hidden_layer_sizes=(64, 32, 16, 8), learning_rate='constant',
+       learning_rate_init=0.001, max_iter=200, momentum=0.9,
+       n_iter_no_change=10, nesterovs_momentum=True, power_t=0.5,
+       random_state=1, shuffle=True, solver='sgd', tol=0.0001,
+       validation_fraction=0.1, verbose=False, warm_start=False)
+2019-04-12 10:22:56,814 - ML - INFO - Loading model from /home/pi/dance/communications/test_model.sav
+2019-04-12 10:22:56,926 - ML - INFO - Successfully loaded the model: MLPClassifier(activation='relu', alpha=1e-05, batch_size=10, beta_1=0.9,
+       beta_2=0.999, early_stopping=False, epsilon=1e-08,
+       hidden_layer_sizes=(64, 32, 16, 8), learning_rate='constant',
+       learning_rate_init=0.001, max_iter=200, momentum=0.9,
+       n_iter_no_change=10, nesterovs_momentum=True, power_t=0.5,
+       random_state=1, shuffle=True, solver='sgd', tol=0.0001,
+       validation_fraction=0.1, verbose=False, warm_start=False)
+2019-04-12 10:22:59,646 - ML - INFO - Loading model from /home/pi/dance/communications/test_model.sav
+2019-04-12 10:22:59,680 - ML - INFO - Loading model from /home/pi/dance/communications/test_model.sav
+2019-04-12 10:22:59,761 - ML - INFO - Successfully loaded the model: MLPClassifier(activation='relu', alpha=1e-05, batch_size=10, beta_1=0.9,
+       beta_2=0.999, early_stopping=False, epsilon=1e-08,
+       hidden_layer_sizes=(64, 32, 16, 8), learning_rate='constant',
+       learning_rate_init=0.001, max_iter=200, momentum=0.9,
+       n_iter_no_change=10, nesterovs_momentum=True, power_t=0.5,
+       random_state=1, shuffle=True, solver='sgd', tol=0.0001,
+       validation_fraction=0.1, verbose=False, warm_start=False)
+2019-04-12 10:22:59,815 - ML - INFO - Successfully loaded the model: MLPClassifier(activation='relu', alpha=1e-05, batch_size=10, beta_1=0.9,
+       beta_2=0.999, early_stopping=False, epsilon=1e-08,
+       hidden_layer_sizes=(64, 32, 16, 8), learning_rate='constant',
+       learning_rate_init=0.001, max_iter=200, momentum=0.9,
+       n_iter_no_change=10, nesterovs_momentum=True, power_t=0.5,
+       random_state=1, shuffle=True, solver='sgd', tol=0.0001,
+       validation_fraction=0.1, verbose=False, warm_start=False)
+2019-04-12 10:31:29,014 - ML - INFO - Loading model from /home/pi/dance/communications/test_model.sav
+2019-04-12 10:31:29,197 - ML - INFO - Successfully loaded the model: MLPClassifier(activation='relu', alpha=1e-05, batch_size=10, beta_1=0.9,
+       beta_2=0.999, early_stopping=False, epsilon=1e-08,
+       hidden_layer_sizes=(64, 32, 16, 8), learning_rate='constant',
+       learning_rate_init=0.001, max_iter=200, momentum=0.9,
+       n_iter_no_change=10, nesterovs_momentum=True, power_t=0.5,
+       random_state=1, shuffle=True, solver='sgd', tol=0.0001,
+       validation_fraction=0.1, verbose=False, warm_start=False)
+2019-04-12 10:31:29,926 - ML - INFO - 4.0
+2019-04-12 10:31:30,038 - ML - INFO - 4.0
+2019-04-12 10:31:30,793 - ML - INFO - 4.0
+2019-04-12 10:31:30,795 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:31:31,448 - ML - INFO - 4.0
+2019-04-12 10:31:32,168 - ML - INFO - 4.0
+2019-04-12 10:31:32,818 - ML - INFO - 4.0
+2019-04-12 10:31:32,819 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:31:33,521 - ML - INFO - 4.0
+2019-04-12 10:31:34,213 - ML - INFO - 2.0
+2019-04-12 10:31:34,273 - ML - INFO - 2.0
+2019-04-12 10:31:34,977 - ML - INFO - 4.0
+2019-04-12 10:31:35,018 - ML - INFO - 4.0
+2019-04-12 10:31:35,728 - ML - INFO - 4.0
+2019-04-12 10:31:35,730 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:31:36,429 - ML - INFO - 4.0
+2019-04-12 10:31:37,141 - ML - INFO - 4.0
+2019-04-12 10:31:37,813 - ML - INFO - 1.0
+2019-04-12 10:31:37,887 - ML - INFO - 1.0
+2019-04-12 10:31:38,578 - ML - INFO - 2.0
+2019-04-12 10:31:38,641 - ML - INFO - 1.0
+2019-04-12 10:31:38,706 - ML - INFO - 1.0
+2019-04-12 10:31:39,403 - ML - INFO - 4.0
+2019-04-12 10:31:39,454 - ML - INFO - 4.0
+2019-04-12 10:31:40,173 - ML - INFO - 4.0
+2019-04-12 10:31:40,175 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:31:40,841 - ML - INFO - 4.0
+2019-04-12 10:31:41,552 - ML - INFO - 2.0
+2019-04-12 10:31:41,598 - ML - INFO - 2.0
+2019-04-12 10:31:42,297 - ML - INFO - 4.0
+2019-04-12 10:31:42,363 - ML - INFO - 4.0
+2019-04-12 10:31:43,029 - ML - INFO - 4.0
+2019-04-12 10:31:43,030 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:31:43,764 - ML - INFO - 4.0
+2019-04-12 10:31:44,472 - ML - INFO - 4.0
+2019-04-12 10:31:45,176 - ML - INFO - 4.0
+2019-04-12 10:31:45,178 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:31:45,876 - ML - INFO - 4.0
+2019-04-12 10:31:46,579 - ML - INFO - 4.0
+2019-04-12 10:31:47,273 - ML - INFO - 4.0
+2019-04-12 10:31:47,274 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:31:47,959 - ML - INFO - 4.0
+2019-04-12 10:31:48,621 - ML - INFO - 4.0
+2019-04-12 10:31:49,324 - ML - INFO - 4.0
+2019-04-12 10:31:49,325 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:31:49,973 - ML - INFO - 4.0
+2019-04-12 10:31:50,649 - ML - INFO - 4.0
+2019-04-12 10:31:51,344 - ML - INFO - 4.0
+2019-04-12 10:31:51,346 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:31:52,006 - ML - INFO - 2.0
+2019-04-12 10:31:52,078 - ML - INFO - 2.0
+2019-04-12 10:31:52,762 - ML - INFO - 4.0
+2019-04-12 10:31:52,822 - ML - INFO - 4.0
+2019-04-12 10:31:53,492 - ML - INFO - 4.0
+2019-04-12 10:31:53,493 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:31:54,207 - ML - INFO - 4.0
+2019-04-12 10:31:54,879 - ML - INFO - 4.0
+2019-04-12 10:31:55,570 - ML - INFO - 4.0
+2019-04-12 10:31:55,572 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:31:56,249 - ML - INFO - 4.0
+2019-04-12 10:31:56,960 - ML - INFO - 4.0
+2019-04-12 10:31:57,619 - ML - INFO - 4.0
+2019-04-12 10:31:57,620 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:31:58,313 - ML - INFO - 4.0
+2019-04-12 10:31:58,991 - ML - INFO - 4.0
+2019-04-12 10:31:59,723 - ML - INFO - 1.0
+2019-04-12 10:31:59,785 - ML - INFO - 1.0
+2019-04-12 10:32:00,510 - ML - INFO - 4.0
+2019-04-12 10:32:00,574 - ML - INFO - 4.0
+2019-04-12 10:32:01,252 - ML - INFO - 4.0
+2019-04-12 10:32:01,253 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:32:01,969 - ML - INFO - 4.0
+2019-04-12 10:32:02,629 - ML - INFO - 4.0
+2019-04-12 10:32:03,335 - ML - INFO - 4.0
+2019-04-12 10:32:03,337 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:32:04,022 - ML - INFO - 4.0
+2019-04-12 10:32:04,701 - ML - INFO - 4.0
+2019-04-12 10:32:05,400 - ML - INFO - 4.0
+2019-04-12 10:32:05,402 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:32:06,066 - ML - INFO - 4.0
+2019-04-12 10:32:06,818 - ML - INFO - 2.0
+2019-04-12 10:32:06,864 - ML - INFO - 2.0
+2019-04-12 10:32:07,537 - ML - INFO - 4.0
+2019-04-12 10:32:07,631 - ML - INFO - 4.0
+2019-04-12 10:32:08,294 - ML - INFO - 4.0
+2019-04-12 10:32:08,295 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:32:09,023 - ML - INFO - 4.0
+2019-04-12 10:32:09,692 - ML - INFO - 4.0
+2019-04-12 10:32:10,375 - ML - INFO - 4.0
+2019-04-12 10:32:10,377 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:32:11,035 - ML - INFO - 4.0
+2019-04-12 10:32:11,728 - ML - INFO - 4.0
+2019-04-12 10:32:12,401 - ML - INFO - 4.0
+2019-04-12 10:32:12,402 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:32:13,065 - ML - INFO - 4.0
+2019-04-12 10:32:13,758 - ML - INFO - 4.0
+2019-04-12 10:32:14,425 - ML - INFO - 4.0
+2019-04-12 10:32:14,426 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:32:15,112 - ML - INFO - 4.0
+2019-04-12 10:32:15,778 - ML - INFO - 4.0
+2019-04-12 10:32:16,956 - ML - INFO - 4.0
+2019-04-12 10:32:16,959 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:32:17,142 - ML - INFO - 4.0
+2019-04-12 10:32:17,885 - ML - INFO - 4.0
+2019-04-12 10:32:18,530 - ML - INFO - 4.0
+2019-04-12 10:32:18,531 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:32:19,245 - ML - INFO - 4.0
+2019-04-12 10:32:19,917 - ML - INFO - 2.0
+2019-04-12 10:32:19,994 - ML - INFO - 2.0
+2019-04-12 10:32:20,690 - ML - INFO - 4.0
+2019-04-12 10:32:20,730 - ML - INFO - 4.0
+2019-04-12 10:32:21,418 - ML - INFO - 4.0
+2019-04-12 10:32:21,420 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:32:22,100 - ML - INFO - 4.0
+2019-04-12 10:32:22,847 - ML - INFO - 4.0
+2019-04-12 10:32:23,566 - ML - INFO - 4.0
+2019-04-12 10:32:23,568 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:32:24,241 - ML - INFO - 4.0
+2019-04-12 10:32:24,924 - ML - INFO - 4.0
+2019-04-12 10:32:25,620 - ML - INFO - 4.0
+2019-04-12 10:32:25,621 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:32:26,314 - ML - INFO - 4.0
+2019-04-12 10:32:26,991 - ML - INFO - 4.0
+2019-04-12 10:32:27,649 - ML - INFO - 4.0
+2019-04-12 10:32:27,650 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:32:28,333 - ML - INFO - 4.0
+2019-04-12 10:32:29,018 - ML - INFO - 4.0
+2019-04-12 10:32:29,679 - ML - INFO - 2.0
+2019-04-12 10:32:29,748 - ML - INFO - 2.0
+2019-04-12 10:32:30,433 - ML - INFO - 4.0
+2019-04-12 10:32:30,491 - ML - INFO - 4.0
+2019-04-12 10:32:31,181 - ML - INFO - 4.0
+2019-04-12 10:32:31,182 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:32:31,852 - ML - INFO - 4.0
+2019-04-12 10:32:32,548 - ML - INFO - 4.0
+2019-04-12 10:32:33,222 - ML - INFO - 1.0
+2019-04-12 10:32:33,283 - ML - INFO - 1.0
+2019-04-12 10:32:33,978 - ML - INFO - 4.0
+2019-04-12 10:32:34,031 - ML - INFO - 4.0
+2019-04-12 10:32:34,747 - ML - INFO - 4.0
+2019-04-12 10:32:34,748 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:32:35,407 - ML - INFO - 4.0
+2019-04-12 10:32:36,108 - ML - INFO - 4.0
+2019-04-12 10:32:36,836 - ML - INFO - 4.0
+2019-04-12 10:32:36,837 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:32:37,613 - ML - INFO - 2.0
+2019-04-12 10:32:37,682 - ML - INFO - 2.0
+2019-04-12 10:32:38,454 - ML - INFO - 2.0
+2019-04-12 10:32:38,456 - ML - INFO - PREDICT: 2.0
+2019-04-12 10:32:39,178 - ML - INFO - 1.0
+2019-04-12 10:32:39,254 - ML - INFO - 1.0
+2019-04-12 10:32:40,026 - ML - INFO - 1.0
+2019-04-12 10:32:40,028 - ML - INFO - PREDICT: 1.0
+2019-04-12 10:32:40,701 - ML - INFO - 4.0
+2019-04-12 10:32:40,776 - ML - INFO - 4.0
+2019-04-12 10:32:41,488 - ML - INFO - 4.0
+2019-04-12 10:32:41,489 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:32:42,148 - ML - INFO - 4.0
+2019-04-12 10:32:42,842 - ML - INFO - 4.0
+2019-04-12 10:38:14,858 - ML - INFO - Loading model from /home/pi/dance/communications/test_model.sav
+2019-04-12 10:38:15,041 - ML - INFO - Successfully loaded the model: MLPClassifier(activation='relu', alpha=1e-05, batch_size=10, beta_1=0.9,
+       beta_2=0.999, early_stopping=False, epsilon=1e-08,
+       hidden_layer_sizes=(64, 32, 16, 8), learning_rate='constant',
+       learning_rate_init=0.001, max_iter=200, momentum=0.9,
+       n_iter_no_change=10, nesterovs_momentum=True, power_t=0.5,
+       random_state=1, shuffle=True, solver='sgd', tol=0.0001,
+       validation_fraction=0.1, verbose=False, warm_start=False)
+2019-04-12 10:38:16,478 - ML - INFO - 4.0
+2019-04-12 10:38:16,542 - ML - INFO - 4.0
+2019-04-12 10:38:17,262 - ML - INFO - 2.0
+2019-04-12 10:38:17,342 - ML - INFO - 2.0
+2019-04-12 10:38:18,029 - ML - INFO - 4.0
+2019-04-12 10:38:18,102 - ML - INFO - 4.0
+2019-04-12 10:38:18,770 - ML - INFO - 4.0
+2019-04-12 10:38:18,771 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:38:19,455 - ML - INFO - 4.0
+2019-04-12 10:38:20,139 - ML - INFO - 4.0
+2019-04-12 10:38:20,825 - ML - INFO - 4.0
+2019-04-12 10:38:20,828 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:38:21,507 - ML - INFO - 4.0
+2019-04-12 10:38:22,226 - ML - INFO - 4.0
+2019-04-12 10:38:22,918 - ML - INFO - 4.0
+2019-04-12 10:38:22,920 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:38:23,573 - ML - INFO - 4.0
+2019-04-12 10:38:24,259 - ML - INFO - 4.0
+2019-04-12 10:38:24,953 - ML - INFO - 4.0
+2019-04-12 10:38:24,954 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:38:25,680 - ML - INFO - 4.0
+2019-04-12 10:38:26,382 - ML - INFO - 4.0
+2019-04-12 10:38:27,097 - ML - INFO - 4.0
+2019-04-12 10:38:27,098 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:38:27,794 - ML - INFO - 2.0
+2019-04-12 10:38:27,832 - ML - INFO - 2.0
+2019-04-12 10:38:28,515 - ML - INFO - 4.0
+2019-04-12 10:38:28,592 - ML - INFO - 4.0
+2019-04-12 10:38:29,274 - ML - INFO - 4.0
+2019-04-12 10:38:29,275 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:38:30,007 - ML - INFO - 2.0
+2019-04-12 10:38:30,048 - ML - INFO - 2.0
+2019-04-12 10:38:30,777 - ML - INFO - 4.0
+2019-04-12 10:38:30,844 - ML - INFO - 4.0
+2019-04-12 10:38:31,520 - ML - INFO - 4.0
+2019-04-12 10:38:31,521 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:38:32,213 - ML - INFO - 4.0
+2019-04-12 10:38:32,910 - ML - INFO - 4.0
+2019-04-12 10:38:33,604 - ML - INFO - 4.0
+2019-04-12 10:38:33,605 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:38:34,272 - ML - INFO - 4.0
+2019-04-12 10:38:35,016 - ML - INFO - 4.0
+2019-04-12 10:38:35,683 - ML - INFO - 4.0
+2019-04-12 10:38:35,684 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:38:36,394 - ML - INFO - 4.0
+2019-04-12 10:38:37,088 - ML - INFO - 4.0
+2019-04-12 10:38:37,807 - ML - INFO - 4.0
+2019-04-12 10:38:37,808 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:38:38,517 - ML - INFO - 4.0
+2019-04-12 10:38:39,202 - ML - INFO - 4.0
+2019-04-12 10:38:39,887 - ML - INFO - 4.0
+2019-04-12 10:38:39,887 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:38:40,581 - ML - INFO - 4.0
+2019-04-12 10:38:41,255 - ML - INFO - 4.0
+2019-04-12 10:38:41,971 - ML - INFO - 4.0
+2019-04-12 10:38:41,973 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:38:42,646 - ML - INFO - 4.0
+2019-04-12 10:38:43,363 - ML - INFO - 4.0
+2019-04-12 10:38:44,035 - ML - INFO - 4.0
+2019-04-12 10:38:44,036 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:38:44,722 - ML - INFO - 4.0
+2019-04-12 10:38:45,404 - ML - INFO - 4.0
+2019-04-12 10:38:46,091 - ML - INFO - 4.0
+2019-04-12 10:38:46,092 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:38:46,751 - ML - INFO - 4.0
+2019-04-12 10:38:47,445 - ML - INFO - 4.0
+2019-04-12 10:38:48,104 - ML - INFO - 4.0
+2019-04-12 10:38:48,105 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:38:48,801 - ML - INFO - 4.0
+2019-04-12 10:38:49,458 - ML - INFO - 4.0
+2019-04-12 10:38:50,162 - ML - INFO - 4.0
+2019-04-12 10:38:50,163 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:38:50,812 - ML - INFO - 4.0
+2019-04-12 10:38:51,531 - ML - INFO - 4.0
+2019-04-12 10:38:52,251 - ML - INFO - 4.0
+2019-04-12 10:38:52,252 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:38:52,977 - ML - INFO - 4.0
+2019-04-12 10:38:53,636 - ML - INFO - 4.0
+2019-04-12 10:38:54,340 - ML - INFO - 4.0
+2019-04-12 10:38:54,342 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:38:54,992 - ML - INFO - 4.0
+2019-04-12 10:38:55,738 - ML - INFO - 4.0
+2019-04-12 10:38:56,523 - ML - INFO - 4.0
+2019-04-12 10:38:56,525 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:38:57,242 - ML - INFO - 1.0
+2019-04-12 10:38:57,294 - ML - INFO - 1.0
+2019-04-12 10:38:58,038 - ML - INFO - 4.0
+2019-04-12 10:38:58,090 - ML - INFO - 4.0
+2019-04-12 10:38:58,826 - ML - INFO - 4.0
+2019-04-12 10:38:58,827 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:38:59,495 - ML - INFO - 2.0
+2019-04-12 10:38:59,578 - ML - INFO - 2.0
+2019-04-12 10:39:00,244 - ML - INFO - 1.0
+2019-04-12 10:39:00,309 - ML - INFO - 1.0
+2019-04-12 10:39:01,015 - ML - INFO - 4.0
+2019-04-12 10:39:01,071 - ML - INFO - 4.0
+2019-04-12 10:39:01,733 - ML - INFO - 4.0
+2019-04-12 10:39:01,733 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:39:02,441 - ML - INFO - 4.0
+2019-04-12 10:39:03,082 - ML - INFO - 4.0
+2019-04-12 10:39:03,790 - ML - INFO - 4.0
+2019-04-12 10:39:03,792 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:39:04,436 - ML - INFO - 4.0
+2019-04-12 10:39:05,145 - ML - INFO - 4.0
+2019-04-12 10:39:05,800 - ML - INFO - 4.0
+2019-04-12 10:39:05,801 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:39:06,482 - ML - INFO - 4.0
+2019-04-12 10:39:07,143 - ML - INFO - 4.0
+2019-04-12 10:39:07,836 - ML - INFO - 4.0
+2019-04-12 10:39:07,837 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:39:08,499 - ML - INFO - 4.0
+2019-04-12 10:39:09,189 - ML - INFO - 4.0
+2019-04-12 10:39:09,879 - ML - INFO - 4.0
+2019-04-12 10:39:09,881 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:39:10,562 - ML - INFO - 4.0
+2019-04-12 10:39:11,255 - ML - INFO - 4.0
+2019-04-12 10:39:11,925 - ML - INFO - 4.0
+2019-04-12 10:39:11,926 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:39:12,611 - ML - INFO - 4.0
+2019-04-12 10:39:13,270 - ML - INFO - 4.0
+2019-04-12 10:39:13,977 - ML - INFO - 4.0
+2019-04-12 10:39:13,979 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:39:14,641 - ML - INFO - 4.0
+2019-04-12 10:39:15,355 - ML - INFO - 4.0
+2019-04-12 10:39:16,049 - ML - INFO - 4.0
+2019-04-12 10:39:16,050 - ML - INFO - PREDICT: 4.0
+2019-04-12 10:39:16,742 - ML - INFO - 4.0
