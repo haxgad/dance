@@ -51,4 +51,6 @@ import pandas as pd
 dataframe = pd.read_csv("../dance_data/processed_data/everything.txt", sep=",", header=None)
 dataset = dataframe.values[:,0:15]
 clf = Classifier('../models/dance_data_Mar_26_model.h5')
-print(clf.predict(dataset[157:182]))
+start = 157
+window_size = 25
+print(clf.predict(dataset[start:start+window_size]))

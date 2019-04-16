@@ -42,21 +42,23 @@ for f in listdir("../data_26-March/"):
                 X = np.append(X, 2)
             if "hunchback" in f:
                 X = np.append(X, 3)
-            if "raffles" in f:
+            if "raffles_left" in f:
                 X = np.append(X, 4)
-            if "running" in f:
+            if "raffles_right" in f:
                 X = np.append(X, 5)
-            if "james" in f:
+            if "running" in f:
                 X = np.append(X, 6)
-            if "snake" in f:
+            if "james" in f:
                 X = np.append(X, 7)
-            if "double" in f:
+            if "snake" in f:
                 X = np.append(X, 8)
-            if "mermaid" in f:
+            if "double" in f:
                 X = np.append(X, 9)
-            if "end" in f:
+            if "mermaid" in f:
                 X = np.append(X, 10)
+            if "end" in f:
+                X = np.append(X, 11)
             dance_data = np.append(dance_data, [X], axis=0)
             i += 1
             print(len(dance_data))
-np.savetxt("../data_26-March/data.csv", dance_data, delimiter=",")
+np.savetxt("../processed_data_window25.csv", dance_data, delimiter=",")
