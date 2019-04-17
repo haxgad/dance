@@ -31,10 +31,11 @@ def create_logger(name, filename='/home/pi/comms/comms.log'):
 
 # Initialise
 logger = create_logger('root')
-BUF_SIZE = 10
+BUF_SIZE = 50
 q = Queue()
-# clf = Classifier('/home/pi/comms/dance_data_Mar_26_model.h5')
-clf = Classifier('/home/pi/dance/communications/test_model.sav')
+# clf = Classifier('/home/pi/comms/window50_model.h5')
+#clf = Classifier('/home/pi/dance/communications/test_model.sav')
+clf = Classifier('/home/pi/dance/communications/window50_model.sav')
 # print(clf.predict(dataset[157:182]))
 
 
@@ -66,16 +67,13 @@ class ProducerThread(threading.Thread):
                 data_list, error = self.client.receive_serialized_data()
                 # ToDo: Log power later
 
-                try:
-                    with open(filename, 'a') as csv_file:
-                        writer_obj = writer(csv_file)
-                        data_list, error = self.client.receive_serialized_data()
-                        # print("Index: {}".format(index))
-                        logger.info("Index: {}".format(index))
-                        index += 1
-                        writer_obj.writerow(data_list)
-                except Exception as exc:
-                    logger.debug(str(exc))
+                with open(filename, 'a') as csv_file:
+                    writer_obj = writer(csv_file)
+                    data_list, error = self.client.receive_serialized_data()
+                    print("Index: {}".format(index))
+                    logger.info("Index:p {}".format(index))
+                    index += 1
+                    writer_obj.writerow(data_list)
 
                 if data_list:
                     buffer.append((data_list[:15], data_list[15:]))
@@ -89,9 +87,12 @@ class ProducerThread(threading.Thread):
                     q.put(buffer)
 
                     # Clear the buffer for new data
+                    #buffer = buffer[BUF_SIZE/2:]
                     buffer = []
+                    
             except Exception as exc:
-                logger.error("Comms - {}".format(str(exc)))
+                #logger.error("Comms - {}".format(str(exc)))
+                print(str(exc))
 
 
 class ConsumerThread(threading.Thread):
@@ -104,18 +105,18 @@ class ConsumerThread(threading.Thread):
         self.logger = create_logger('ML', '/home/pi/comms/ml_output.log')
         
         # Connect to eval server
-        ip_addr = "192.168.43.180"
-        #ip_addr = "192.168.43.51"
-        port = 8889
-        self.socket_client = SocketClient(ip_addr, port)
-        while 1:
-            try:
-                self.socket_client.connect()
-                break
-            except Exception as exc:
-                print(str(exc))
-        
-        print('Server connected')
+#        ip_addr = "192.168.43.180"
+#        #ip_addr = "192.168.43.51"
+#        port = 8889
+#        self.socket_client = SocketClient(ip_addr, port)
+#        while 1:
+#            try:
+#                self.socket_client.connect()
+#                break
+#            except Exception as exc:
+#                print(str(exc))
+#        
+#        print('Server connected')
                 
 
     def run(self):
@@ -125,9 +126,17 @@ class ConsumerThread(threading.Thread):
         action_mapping = {
              0: 'chicken',
              1: 'cowboy',
-             2: 'crab',
-             3: 'hunchback',
-             4: 'raffles'
+             2: 'cowboy',
+             3: 'crab',
+             4: 'hunchback',
+             5: 'raffles',
+             6: 'raffles',
+             7: 'runningman',
+             8: 'jamesbond',
+             9: 'snake',
+             10:'doublepump',
+             11:'mermaid',
+             12:'final'
         }
         while 1:
             if not q.empty():
@@ -142,6 +151,7 @@ class ConsumerThread(threading.Thread):
                 # Send the result
                 # As the WiFi is not working, log the output to file
                 self.logger.info(predicted_move)
+                print(action_mapping[predicted_move])
                 
                 if predicted_move != prev:
                     prev = predicted_move
@@ -149,16 +159,16 @@ class ConsumerThread(threading.Thread):
                     continue
                 count += 1
                 
-                if count >= 3:
-                    self.logger.info("PREDICT: {}".format(predicted_move))
-                    self.socket_client.send_data(
-                        action_mapping[int(predicted_move)],
-                        voltage / 1000,
-                        current / 1000,
-                        voltage*current / 1000000,
-                        cumpower
-                    )
-                    count = 0
+#                if count >= 3:
+#                    self.logger.info("PREDICT: {}".format(predicted_move))
+#                    self.socket_client.send_data(
+#                        action_mapping[int(predicted_move)],
+#                        voltage / 1000,
+#                        current / 1000,
+#                        voltage*current / 1000000,
+#                        cumpower
+#                    )
+#                    count = 0
                         
             #try:
                         

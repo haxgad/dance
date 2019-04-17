@@ -27,6 +27,7 @@ class Classifier:
         # print('Loading model from ' +  model_path)
         logger.info('Loading model from {}'.format(model_path))
         self.model = pickle.load(open(model_path, 'rb'))
+        self.model._make_predict_function()
         # print('Successfully loaded the model: ', self.model)
         logger.info('Successfully loaded the model: {}'.format(self.model))
 
@@ -54,7 +55,7 @@ class Classifier:
 
     def predict(self, input_data):
         features = preprocessing.normalize([self.data_process(input_data)])
-        return self.model.predict(features)
+        return self.model.predict_classes(features)
 
 
 # # test purpose, remove when integrating
