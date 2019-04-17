@@ -1,11 +1,11 @@
 import numpy as np
-from keras.models import load_model
 from sklearn import preprocessing
+import pickle
 
 class Classifier:
     def __init__(self, model_path):
         print('Loading model from ' +  model_path)
-        self.model = load_model(model_path)
+        self.model = pickle.load(open(model_path, 'rb'))
         print('Successfully loaded the model: ', self.model)
 
     def data_process(self, input_data):
@@ -32,5 +32,5 @@ class Classifier:
 
     def predict(self, input_data):
         features = preprocessing.normalize([self.data_process(input_data)])
-        return self.model.predict_classes(features, verbose=0)
+        return self.model.predict(features)
 
