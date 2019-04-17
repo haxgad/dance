@@ -23,7 +23,7 @@ logger = create_logger('UART')
 
 class UARTClient:
     def __init__(self, port):
-        self.ser = serial.Serial(port=port, baudrate=9600, timeout=2)
+        self.ser = serial.Serial(port=port, baudrate=19200, timeout=2)
         self.ser.flush()
 
     def close(self):
