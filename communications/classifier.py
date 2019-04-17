@@ -27,11 +27,11 @@ class Classifier:
         # print('Loading model from ' +  model_path)
         logger.info('Loading model from {}'.format(model_path))
         self.model = pickle.load(open(model_path, 'rb'))
-        self.model._make_predict_function()
+        # self.model._make_predict_function()
         # print('Successfully loaded the model: ', self.model)
         logger.info('Successfully loaded the model: {}'.format(self.model))
 
-    def data_process(self, input_data):
+   def data_process(self, input_data):
         # extract features from raw data
         # mean, variance, median, mean absolute deviation, max, min
         X = []
@@ -55,23 +55,4 @@ class Classifier:
 
     def predict(self, input_data):
         features = preprocessing.normalize([self.data_process(input_data)])
-        return self.model.predict_classes(features)
-
-
-# # test purpose, remove when integrating
-# import pandas as pd
-# # from sklearn.metrics import confusion_matrix
-#
-# # file_name = 'dance_data_Mar_26'
-# # file_path = '../dance_data/' + file_name + '.csv'
-# # dataframe = pd.read_csv(file_path, header=None)
-# # dataset = dataframe.values
-# # X = preprocessing.normalize(dataset[:,0:len(dataset[0])-1].astype(float))
-# # y = dataset[:,len(dataset[0])-1].astype(float)
-# # clf = Classifier('../models/' + file_name + '_model.h5')
-# # print(confusion_matrix(y, clf.predict(X)))
-#
-# dataframe = pd.read_csv("../dance_data/data_26-March/raffles_jason.txt", sep=",", header=None)
-# dataset = dataframe.values[:,0:15]
-# clf = Classifier('../models/dance_data_Mar_26_model.h5')
-# print(clf.predict(dataset[157:182]))
+        return self.model.predict_classes(features, verbose=0)
