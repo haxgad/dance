@@ -2,6 +2,7 @@ import numpy as np
 from sklearn import preprocessing
 import pickle
 import logging
+from keras.models import load_model
 
 def create_logger(name, filename='/home/pi/comms/ML.log'):
     logger = logging.getLogger(name)
@@ -26,12 +27,19 @@ class Classifier:
     def __init__(self, model_path):
         # print('Loading model from ' +  model_path)
         logger.info('Loading model from {}'.format(model_path))
-        self.model = pickle.load(open(model_path, 'rb'))
-        # self.model._make_predict_function()
+        
+        # For .sav file
+        #self.model = pickle.load(open(model_path, 'rb'))
+        
+        # For .h5 file
+        self.model = load_model(model_path)
+        
+        self.model._make_predict_function()
+        
         # print('Successfully loaded the model: ', self.model)
         logger.info('Successfully loaded the model: {}'.format(self.model))
 
-   def data_process(self, input_data):
+    def data_process(self, input_data):
         # extract features from raw data
         # mean, variance, median, mean absolute deviation, max, min
         X = []

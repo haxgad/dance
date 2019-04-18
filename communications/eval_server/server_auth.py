@@ -11,7 +11,7 @@ class ServerAuth:
 
     def compress_data_to_text(self, action, voltage, current, power, cumpower):
         allowed_sizes = (8, 16, 32, 64, 128, 256)
-        output = "{}|{}|{}|{}|".format(
+        output = "#{}|{}|{}|{}|".format(
                 action,
                 voltage,
                 current,

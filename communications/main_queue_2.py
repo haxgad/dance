@@ -32,7 +32,7 @@ def create_logger(name, filename='/home/pi/comms/comms.log'):
 # Initialise
 logger = create_logger('root')
 BUF_SIZE = 50
-q = Queue(2)
+q = Queue()
 # clf = Classifier('/home/pi/comms/dance_data_Mar_26_model.h5')
 # clf = Classifier('/home/pi/dance/communications/test_model.sav')
 # print(clf.predict(dataset[157:182]))
@@ -42,7 +42,6 @@ class ProducerThread(threading.Thread):
     def __init__(self, group=None, target=None, name=None,
                  args=(), kwargs=None, verbose=None):
         super(ProducerThread,self).__init__()
-        print("Producer ready")
         self.target = target
         self.name = name
 
@@ -57,19 +56,18 @@ class ProducerThread(threading.Thread):
 
         # Get filename to output data
         count = 0
-        prefix_name = '/home/pi/comms/output'
-        while os.path.isfile(prefix_name + str(count) + '.txt'):
-            count += 1
-        filename = prefix_name + str(count) + '.txt'
-
+        #prefix_name = '/home/pi/comms/output'
+        #while os.path.isfile(prefix_name + str(count) + '.txt'):
+        #    count += 1
+        #filename = prefix_name + str(count) + '.txt'
+        print("Producer ready")
+        
         while 1:
             data_list, error = self.client.receive_serialized_data()
             if error:
                 logger.error("Comms - {}".format(str(error)))
                 continue
-
-            # ToDo: Log power later
-
+            
             # try:
             #     with open(filename, 'a') as csv_file:
             #         writer_obj = writer(csv_file)
@@ -84,42 +82,46 @@ class ProducerThread(threading.Thread):
             if data_list:
                 buffer.append((data_list[:15], data_list[15:]))
                 logger.info("Index: {}".format(index))
+                print("Index: {}".format(index))
                 index += 1
 
             # Send the 20-row package to ML model
             if len(buffer) >= BUF_SIZE:
                 q.put(buffer)
-
                 # Clear the buffer for new data
-                buffer = []
+                buffer = buffer[25:]
 
 
 class ConsumerThread(threading.Thread):
     def __init__(self, group=None, target=None, name=None,
                  args=(), kwargs=None, verbose=None):
         super(ConsumerThread,self).__init__()
-        print("Consumer ready")
+        
         self.target = target
         self.name = name
         self.logger = create_logger('ML', '/home/pi/comms/ml_output.log')
-        self.clf = Classifier('/home/pi/dance/communications/window50_model.sav')
-
+        #self.clf = Classifier('/home/pi/dance/communications/window50_model.sav')
+        self.clf = Classifier('/home/pi/dance/software/final_models/window50_model.h5')
+        
         # Connect to eval server
         # ip_addr = "192.168.43.180"
 
         # Prof's IP
         #ip_addr = "192.168.43.51"
+        
+        # Using my hotspot
+        ip_addr = "172.20.10.10"
 
-        # port = 8889
-        # self.socket_client = SocketClient(ip_addr, port)
-        # while 1:
-        #     try:
-        #         self.socket_client.connect()
-        #         break
-        #     except Exception as exc:
-        #         print(str(exc))
-        #
-        # print('Server connected')
+        port = 8888
+        print('Prepare to connect to server')
+        self.socket_client = SocketClient(ip_addr, port)
+        while 1:
+            try:
+                self.socket_client.connect()
+                break
+            except Exception as exc:
+                print(str(exc))
+        print('Server connected')
 
 
     def run(self):
@@ -141,36 +143,41 @@ class ConsumerThread(threading.Thread):
              11:'mermaid',
              12:'final'
         }
+        print("Consumer ready")
+        
         while 1:
             item = q.get()
-            q.task_done()
-
+            q.task_done()    
+            #print('Prepare to predict')
+        
             data_list = [ele[0] for ele in item]
             _, voltage, current, cumpower = item[-1][1]
-
+            #print(data_list)
+            
             # Insert code to call the ML here
             # ...
             predicted_move = self.clf.predict(data_list)[0]
 
             # Send the result
-            self.logger.info(predicted_move)
-
+            self.logger.info(action_mapping[int(predicted_move)])
+            print(action_mapping[int(predicted_move)])
+            
             if predicted_move != prev:
                 prev = predicted_move
                 count = 1
                 continue
             count += 1
 
-            # if count >= 3:
-            #     self.logger.info("PREDICT: {}".format(predicted_move))
-            #     self.socket_client.send_data(
-            #         action_mapping[int(predicted_move)],
-            #         voltage / 1000,
-            #         current / 1000,
-            #         voltage*current / 1000000,
-            #         cumpower
-            #     )
-            #     count = 0
+            if count >= 3:
+                self.logger.info("PREDICT: {}".format(predicted_move))
+                self.socket_client.send_data(
+                    action_mapping[int(predicted_move)],
+                    voltage / 1000,
+                    current / 1000,
+                    voltage*current / 1000000,
+                    cumpower
+                )
+                count = 0
 
 
 
