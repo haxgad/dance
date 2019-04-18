@@ -329,6 +329,12 @@ void Task1( void *pvParameters __attribute__((unused)) )  // This is a Task.
             sensorReadings[arrayCursor + 2] = z;
         }
       }
+//      Serial.print("Sensor readings are: ");
+//      for(int i=0; i<14; i++) {
+//              Serial.print(sensorReadings[i], 5);
+//              Serial.print("\t");
+//          }
+//          Serial.println(sensorReadings[14], 5);
       xSemaphoreGive( xSerialSemaphore ); // Now free or "Give" the Serial Port for others.
     }
 
