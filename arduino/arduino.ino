@@ -32,7 +32,7 @@ const int VOLTAGE_REF = 5;  // Reference voltage for analog read
 //MPU6050 mpu;
 MPU6050 mpu[5];
 
-#define SENSOR0_AD0 12
+#define SENSOR0_AD0 13
 #define SENSOR1_AD0 11
 #define SENSOR2_AD0 10
 #define SENSOR3_AD0 9
@@ -295,8 +295,8 @@ void Task1( void *pvParameters __attribute__((unused)) )  // This is a Task.
           //Serial.println(F("FIFO overflow!"));
     
       // otherwise, check for DMP data ready interrupt (this should happen frequently)
-      } //else if (mpuIntStatus & _BV(MPU6050_INTERRUPT_DMP_INT_BIT)) {
-        if (mpuIntStatus & _BV(MPU6050_INTERRUPT_DMP_INT_BIT)) {
+      } else if (mpuIntStatus & _BV(MPU6050_INTERRUPT_DMP_INT_BIT)) {
+        //if (mpuIntStatus & _BV(MPU6050_INTERRUPT_DMP_INT_BIT)) {
             // wait for correct available data length, should be a VERY short wait
             while (fifoCount < packetSize) fifoCount = mpu[activeSensor].getFIFOCount();
       
@@ -361,12 +361,12 @@ void Task2( void *pvParameters __attribute__((unused)) )  // This is a Task.
       unsigned char deviceCode[1];
       //double readings[1];
       char buffer[64];
-      Serial.print("Sensor readings are: ");
-      for(int i=0; i<14; i++) {
-              Serial.print(sensorReadings[i], 5);
-              Serial.print("\t");
-          }
-          Serial.println(sensorReadings[14], 5);
+//      Serial.print("Sensor readings are: ");
+//      for(int i=0; i<14; i++) {
+//              Serial.print(sensorReadings[i], 5);
+//              Serial.print("\t");
+//          }
+//          Serial.println(sensorReadings[14], 5);
       unsigned len = sendConfig(buffer,deviceCode,sensorReadings);
       DataPacket results; 
       deserialize(&results, buffer);
@@ -570,7 +570,7 @@ for(activeSensor=0; activeSensor<5; activeSensor++) {
   }
 
   // Handshake
-  int isReady = 1;
+  int isReady = 0;
 
   while (isReady == 0)
   {
