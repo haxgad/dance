@@ -1,6 +1,6 @@
 #include <Arduino.h>
 
-const int AD0Delay = 5;
+const int AD0Delay = 1;
 
 // Global Variables
 float sensorValue = 0;   // Variable to store value from analog read
@@ -681,10 +681,10 @@ void loop() {
             sensorReadings[arrayCursor + 2] = z;
         }
       }
-//      Serial.print("sensorReadings = ");
-//      for(int i=0; i< 15; i++) {
-//           Serial.print(sensorReadings[i]);
-//           Serial.print(",");
-//      }
-//      Serial.println("!");
+      Serial.print("sensorReadings = ");
+      for(int i=0; i< 15; i++) {
+           Serial.print(sensorReadings[i]);
+           Serial.print(",");
+      }
+      Serial.println("!");
 }
