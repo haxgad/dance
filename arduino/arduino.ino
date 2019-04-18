@@ -3,6 +3,8 @@
 const int AD0Delay = 1;
 
 // Global Variables
+
+  int counter = 0;
 float sensorValue = 0;   // Variable to store value from analog read
 float halvedVoltage = 0;
 float voltage = 0;
@@ -460,6 +462,12 @@ for(activeSensor=0; activeSensor<5; activeSensor++) {
         Serial.print(devStatus);
         Serial.println(F(")"));
         if(activeSensor == 4) {for(;;);}
+        else {
+           Serial.println(F("\nSend any character to check other sensors: "));
+            while (Serial.available() && Serial.read()); // empty buffer
+            while (!Serial.available());                 // wait for data
+            while (Serial.available() && Serial.read()); // empty buffer again
+        }
     }
     
       }
@@ -482,7 +490,7 @@ for(activeSensor=0; activeSensor<5; activeSensor++) {
   }
 
   // Handshake
-  int isReady = 1;
+  int isReady = 0;
 
   while (isReady == 0)
   {
@@ -546,7 +554,17 @@ for(activeSensor=0; activeSensor<5; activeSensor++) {
 // ================================================================
 
 void loop() {
-
+//      if (dmpReady == 0){
+//        Serial.print("------------> Look Here DmpReady = ");
+//      } else
+//      {
+//        
+//        counter += 1;
+//        if (counter == 1000){
+//          Serial.println("Loop() is running");
+//          counter = 0;
+//        }
+//      }
         // if programming failed, don't try to do anything
       if (!dmpReady) return;
     
@@ -635,20 +653,36 @@ void loop() {
       }
     
       mpuIntStatus = mpu[activeSensor].getIntStatus();
+      if (mpuIntStatus == 0){
+        Serial.println("-------------------------- IntStatus 0----------");
+      }
 
       // get current FIFO count
       fifoCount = mpu[activeSensor].getFIFOCount();
+
+//      Serial.print("Sensor ");
+//            Serial.print(activeSensor);
+//            Serial.print(" mpuIntStatus = ");
+//            Serial.print(mpuIntStatus);
+//                      Serial.print(" fifoCount = ");
+//            Serial.println(fifoCount);
+            
     
       // check for overflow (this should never happen unless our code is too inefficient)
       if ((mpuIntStatus & _BV(MPU6050_INTERRUPT_FIFO_OFLOW_BIT)) || fifoCount >= 1024) {
           // reset so we can continue cleanly
           mpu[activeSensor].resetFIFO();
           fifoCount = mpu[activeSensor].getFIFOCount();
-          //Serial.println(F("FIFO overflow!"));
+//          Serial.print("Sensor ");
+//          Serial.print(activeSensor);
+//          Serial.println(F(" FIFO overflow!"));
     
       // otherwise, check for DMP data ready interrupt (this should happen frequently)
       } else if (mpuIntStatus & _BV(MPU6050_INTERRUPT_DMP_INT_BIT)) {
         //if (mpuIntStatus & _BV(MPU6050_INTERRUPT_DMP_INT_BIT)) {
+//             Serial.print("Sensor ");
+//            Serial.print(activeSensor);
+//            Serial.println(" is being read");
             // wait for correct available data length, should be a VERY short wait
             while (fifoCount < packetSize) fifoCount = mpu[activeSensor].getFIFOCount();
       
@@ -681,10 +715,10 @@ void loop() {
             sensorReadings[arrayCursor + 2] = z;
         }
       }
-      Serial.print("sensorReadings = ");
+//      Serial.print("sensorReadings = ");
       for(int i=0; i< 15; i++) {
-           Serial.print(sensorReadings[i]);
-           Serial.print(",");
+//           Serial.print(sensorReadings[i]);
+//           Serial.print(",");
       }
-      Serial.println("!");
+//      Serial.println("!");
 }
