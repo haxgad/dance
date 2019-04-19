@@ -54,10 +54,12 @@ async def producer(myQueue):
         if data_list:
             buffer.append((data_list[:15], data_list[15:]))
             logger.info("Index: {}".format(index))
+            print("Index: {}".format(index))            
             index += 1
 
         if len(buffer) >= BUF_SIZE:
             await q.put(buffer)
+            print('added to buffer')
 
             # Clear the buffer for new data
             #buffer = buffer[BUF_SIZE/2:]
@@ -65,7 +67,7 @@ async def producer(myQueue):
 
 async def consumer(q):
     logger = create_logger('ML', '/home/pi/comms/ml_output.log')
-	action_mapping = {
+    action_mapping = {
          0: 'chicken',
          1: 'cowboy',
          2: 'cowboy',
@@ -93,8 +95,9 @@ async def consumer(q):
     clf = Classifier('/home/pi/dance/communications/window50_model.sav')
     print('Consumer ready')
 
-	while 1:
-		item = await q.get()
+    while 1:
+        item = await q.get()
+        print(item)
         data_list = [ele[0] for ele in item]
         _, voltage, current, cumpower = item[-1][1]
 

@@ -82,7 +82,8 @@ class ProducerThread(threading.Thread):
             if data_list:
                 buffer.append((data_list[:15], data_list[15:]))
                 logger.info("Index: {}".format(index))
-                print("Index: {}".format(index))
+                #print("Index: {}".format(index))
+                #print(data_list)
                 index += 1
 
             # Send the 20-row package to ML model
@@ -90,7 +91,7 @@ class ProducerThread(threading.Thread):
                 q.put(buffer)
                 # Clear the buffer for new data
                 buffer = buffer[25:]
-
+                #buffer = []
 
 class ConsumerThread(threading.Thread):
     def __init__(self, group=None, target=None, name=None,
@@ -101,16 +102,19 @@ class ConsumerThread(threading.Thread):
         self.name = name
         self.logger = create_logger('ML', '/home/pi/comms/ml_output.log')
         #self.clf = Classifier('/home/pi/dance/communications/window50_model.sav')
-        self.clf = Classifier('/home/pi/dance/software/final_models/window50_model.h5')
-        
+        #self.clf = Classifier('/home/pi/dance/software/final_models/window50_model.h5')
+        self.clf = Classifier(
+            '/home/pi/dance/software/final_models/model_1.joblib',
+            '/home/pi/dance/software/final_models/scaler_1.joblib'
+        )
         # Connect to eval server
-        # ip_addr = "192.168.43.180"
+        ip_addr = "192.168.43.51"
 
         # Prof's IP
         #ip_addr = "192.168.43.51"
         
         # Using my hotspot
-        ip_addr = "172.20.10.10"
+        #ip_addr = "172.20.10.10"
 
         port = 8888
         print('Prepare to connect to server')
@@ -157,17 +161,30 @@ class ConsumerThread(threading.Thread):
             # Insert code to call the ML here
             # ...
             predicted_move = self.clf.predict(data_list)[0]
-
+            #try:
+            #    predicted_move = self.clf.predict(data_list)[0]
+            #except Exception as exc:
+            #    self.logger.error(str(exc))
+                
             # Send the result
             self.logger.info(action_mapping[int(predicted_move)])
-            print(action_mapping[int(predicted_move)])
+            #print(action_mapping[int(predicted_move)])
             
             if predicted_move != prev:
                 prev = predicted_move
                 count = 1
                 continue
             count += 1
-
+            
+            # Send all predictions
+#            self.socket_client.send_data(
+#                    action_mapping[int(predicted_move)],
+#                    voltage / 1000,
+#                    current / 1000,
+#                    voltage*current / 1000000,
+#                    cumpower
+#            )
+            
             if count >= 3:
                 self.logger.info("PREDICT: {}".format(predicted_move))
                 self.socket_client.send_data(

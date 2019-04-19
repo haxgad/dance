@@ -134,5 +134,5 @@ if __name__ == '__main__':
 
     # Try running without join
     # And enable `join` for producer only
-    # producer.join()
-    # consumer.join()
+    producer.join()
+    consumer.join()

@@ -1,7 +1,7 @@
 from classifier import Classifier
 
 if __name__ == "__main__":
-    clf = Classifier('/home/pi/comms/test_model.sav')
+    clf = Classifier('/home/pi/dance/communications/window50_model.sav')
     # clf = Classifier('test_model.sav')
     item = [
         [327,8,-68,-209,217,59,-127,-46,73,-1,37,-77,39,-35,61],

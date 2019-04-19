@@ -1,66 +1,76 @@
 import numpy as np
-from sklearn import preprocessing
-import pickle
-import logging
-from keras.models import load_model
-
-def create_logger(name, filename='/home/pi/comms/ML.log'):
-    logger = logging.getLogger(name)
-    logger.setLevel(logging.DEBUG)
-
-    # create a file handler
-    handler = logging.FileHandler(filename)
-    handler.setLevel(logging.DEBUG)
-
-    # create a logging format
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    handler.setFormatter(formatter)
-
-    # add the handlers to the logger
-    logger.addHandler(handler)
-
-    return logger
-
-logger = create_logger('ML')
+from sklearn.externals import joblib
+from scipy import stats
+from os import listdir
 
 class Classifier:
-    def __init__(self, model_path):
-        # print('Loading model from ' +  model_path)
-        logger.info('Loading model from {}'.format(model_path))
-        
-        # For .sav file
-        #self.model = pickle.load(open(model_path, 'rb'))
-        
-        # For .h5 file
-        self.model = load_model(model_path)
-        
+    def __init__(self, model_path, scaler_path):
+        print('Loading model from ' +  model_path)
+        self.scaler = joblib.load(scaler_path)
+        self.model = joblib.load(model_path)
         self.model._make_predict_function()
-        
-        # print('Successfully loaded the model: ', self.model)
-        logger.info('Successfully loaded the model: {}'.format(self.model))
+        print('Successfully loaded the model: ', self.model)
 
-    def data_process(self, input_data):
-        # extract features from raw data
-        # mean, variance, median, mean absolute deviation, max, min
-        X = []
-        for i in range(len(input_data[0])):
-            data = []
-            for j in range(len(input_data)):
-                data.append(input_data[j][i])
-            # mean
-            X.append(np.mean(data))
-            # variance
-            X.append(np.var(data))
-            # median
-            X.append(np.median(data))
-            # mean absolute deviation
-            X.append(np.mean(np.absolute(data - np.mean(data))))
-            # max
-            X.append(max(data))
-            # min
-            X.append(min(data))
-        return np.array(X)
+    def min(self, segment):
+        arr = []
+        for i in range(15):
+            arr.append(np.min(segment[:,i]))
+        return arr
+
+    def max(self, segment):
+        arr = []
+        for i in range(15):
+            arr.append(np.max(segment[:,i]))
+        return arr
+
+    def mean(self, segment):
+        arr = []
+        for i in range(15):
+            arr.append(np.mean(segment[:,i]))
+        return arr
+
+    def standard_dev(self, segment):
+        arr = []
+        for i in range(15):
+            arr.append(np.std(segment[:,i]))
+        return arr
+
+    def rms(self, segment):
+        square = 0
+        for i in range(15):
+            square+=(segment[i]**2)
+        mean = (square/float(15))
+        root = math.sqrt(mean)
+        return root
+
+    def entropy(self, segment):
+        arr = []
+        for i in range(0,15):
+            freq = np.abs(np.fft.rfft(segment[:,i]))
+            arr.append(stats.entropy(freq,base =2))
+        return arr
+
+    def energy(self, segment):
+        arr = []
+        for i in range(0,15):
+            freq = np.abs(np.fft.rfft(segment[:,i]))
+            arr.append(np.sum(freq**2)/len(freq))
+        return arr
+
+    def extract(self, segment):
+        final = []
+        final.extend(self.min(segment))
+        final.extend(self.max(segment))
+        final.extend(self.mean(segment))
+        final.extend(self.standard_dev(segment))
+        final.extend(self.energy(segment))
+        final.extend(self.entropy(segment))
+        return final
 
     def predict(self, input_data):
-        features = preprocessing.normalize([self.data_process(input_data)])
+        data = np.asarray(self.extract(np.asarray(input_data)))
+        data = np.array([data])
+        #features = np.nan_to_num(self.scaler.transform(data))
+        features = self.scaler.transform(data)
         return self.model.predict_classes(features, verbose=0)
+        
