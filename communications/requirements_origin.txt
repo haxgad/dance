@@ -70,7 +70,7 @@ fbrecog==1.6
 filelock==2.0.12
 Flask==0.12.2
 Flask-Compress==1.4.0
-Flask-Cors==3.0.3
+Flask-Cors==3.0.9
 gevent==1.2.2
 glob2==0.5
 google-api-core==1.5.2
